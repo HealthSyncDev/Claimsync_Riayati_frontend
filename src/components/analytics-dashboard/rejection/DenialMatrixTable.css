@@ -1,0 +1,292 @@
+/* Denial Matrix Table — SaaS-level design with color coding */
+.denial-matrix-card.analytics-card {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.denial-matrix-card .card-header {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 14px;
+}
+
+.denial-matrix-card .rejection-analytics-year-dropdown {
+  font-size: 0.8125rem;
+  padding: 8px 12px;
+  padding-right: 32px;
+}
+
+.denial-matrix-card .card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.denial-matrix-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+}
+
+.denial-matrix-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.75rem;
+}
+
+.denial-matrix-th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 6px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.denial-matrix-th:first-child {
+  width: 17%;
+  text-align: left;
+  padding-left: 14px;
+}
+
+.denial-matrix-th--sticky,
+.denial-matrix-td--sticky {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #fff;
+  box-shadow: 1px 0 0 #e2e8f0;
+}
+
+.denial-matrix-th--sticky {
+  z-index: 4;
+  background: #f8fafc;
+}
+
+.denial-matrix-th:not(:first-child):not(.denial-matrix-th--fy) {
+  width: 5.5%;
+}
+
+.denial-matrix-th--fy {
+  width: 9%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: rgba(255, 255, 255, 0.98);
+  font-weight: 700;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.denial-matrix-tr {
+  transition: background-color 0.15s ease;
+}
+
+.denial-matrix-tr:hover {
+  background: #f8fafc;
+}
+
+.denial-matrix-td {
+  padding: 8px 6px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.denial-matrix-td--label {
+  text-align: left;
+  font-weight: 500;
+  color: #1e293b;
+  padding-left: 14px;
+  white-space: nowrap;
+}
+
+.denial-matrix-td--fy {
+  background: rgba(59, 130, 246, 0.06);
+  font-weight: 600;
+  color: #1e293b;
+  border-left: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.denial-matrix-tr:hover .denial-matrix-td--fy {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Color coding for percentage cells */
+.denial-matrix-cell--good {
+  color: #059669;
+  font-weight: 500;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.denial-matrix-cell--warn {
+  color: #b45309;
+  font-weight: 500;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.denial-matrix-cell--critical {
+  color: #dc2626;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* FY Total — stronger tints, no overlap with td--fy bg */
+.denial-matrix-td--fy.denial-matrix-cell--good {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.denial-matrix-td--fy.denial-matrix-cell--warn {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.denial-matrix-td--fy.denial-matrix-cell--critical {
+  color: #b91c1c;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.denial-matrix-tr:hover .denial-matrix-cell--good {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.denial-matrix-tr:hover .denial-matrix-cell--warn {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.denial-matrix-tr:hover .denial-matrix-cell--critical {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.denial-matrix-tr:hover .denial-matrix-td--fy.denial-matrix-cell--good {
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.denial-matrix-tr:hover .denial-matrix-td--fy.denial-matrix-cell--warn {
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.denial-matrix-tr:hover .denial-matrix-td--fy.denial-matrix-cell--critical {
+  background: rgba(239, 68, 68, 0.14);
+}
+
+/* Row grouping — subtle separators between Overall / OP / IP */
+.denial-matrix-tr:nth-child(3) .denial-matrix-td,
+.denial-matrix-tr:nth-child(6) .denial-matrix-td {
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.denial-matrix-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.denial-matrix-anomalies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.denial-matrix-anomaly {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.denial-matrix-anomaly--warn {
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.denial-matrix-anomaly--error {
+  color: #be123c;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+
+.denial-matrix-anomaly--success {
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+
+.denial-matrix-compact-toggle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.denial-matrix-compact-toggle:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.denial-matrix-td--group {
+  padding: 6px 14px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.denial-matrix-tr--dimmed .denial-matrix-td:not(.denial-matrix-td--group) {
+  opacity: 0.45;
+}
+
+.denial-matrix-th--highlight,
+.denial-matrix-td--highlight {
+  background: rgba(99, 102, 241, 0.1) !important;
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.35);
+}
+
+.denial-matrix-tr:hover .denial-matrix-td--sticky {
+  background: #f8fafc;
+}
+
+.denial-matrix-skeleton {
+  height: 300px;
+  background: linear-gradient(
+    105deg,
+    #f8fafc 0%,
+    #f1f5f9 25%,
+    #e2e8f0 50%,
+    #f1f5f9 75%,
+    #f8fafc 100%
+  );
+  background-size: 200% 100%;
+  animation: denial-matrix-shimmer 2s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes denial-matrix-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}

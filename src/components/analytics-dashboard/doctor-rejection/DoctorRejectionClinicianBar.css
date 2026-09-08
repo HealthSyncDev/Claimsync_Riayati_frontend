@@ -1,0 +1,160 @@
+.doctor-rejection-clinician-bar {
+  display: grid;
+  grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px 28px;
+  width: 100%;
+}
+
+.doctor-rejection-clinician-bar__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.doctor-rejection-clinician-bar__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+  letter-spacing: -0.01em;
+}
+
+.doctor-rejection-clinician-bar__hint {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.doctor-rejection-clinician-bar__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-toolbar {
+  width: 100%;
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-main {
+  width: 100%;
+  gap: 0;
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-trigger {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #dbe3ee;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-trigger:hover {
+  border-color: #cbd5e1;
+  background: #fff;
+  box-shadow:
+    0 2px 6px -2px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-trigger.is-open,
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-trigger:focus-visible {
+  border-color: #93c5fd;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-trigger-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid rgba(147, 197, 253, 0.45);
+}
+
+.doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-panel {
+  width: 100%;
+  min-width: min(560px, calc(100vw - 80px));
+  top: calc(100% + 8px);
+  border-radius: 14px;
+}
+
+.doctor-rejection-clinician-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid #1d4ed8;
+  border-radius: 12px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.doctor-rejection-clinician-search-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px -4px rgba(37, 99, 235, 0.45);
+}
+
+.doctor-rejection-clinician-search-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.doctor-rejection-clinician-search-btn:disabled {
+  background: #e2e8f0;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.doctor-rejection-clinician-search-btn--pending {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+@media (max-width: 900px) {
+  .doctor-rejection-clinician-bar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .doctor-rejection-clinician-bar__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .doctor-rejection-clinician-search-btn {
+    width: 100%;
+  }
+
+  .doctor-rejection-clinician-bar__controls .clinician-picker--page-header .clinician-picker-panel {
+    min-width: 100%;
+  }
+}

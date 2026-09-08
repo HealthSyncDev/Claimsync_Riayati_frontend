@@ -1,0 +1,85 @@
+.doctor-chart-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.doctor-top10-table-wrap {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+.doctor-top10-table-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+.doctor-top10-table-wrap::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 3px;
+}
+.doctor-top10-table-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.doctor-top10-table-wrap::-webkit-scrollbar-button {
+  display: none;
+}
+
+.doctor-top10-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.doctor-top10-table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #e2e8f0;
+}
+.doctor-top10-table th:nth-child(1) { width: 32px; text-align: center; }
+.doctor-top10-table th:nth-child(4),
+.doctor-top10-table th:nth-child(5) { text-align: right; }
+.doctor-top10-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+.doctor-top10-table td:nth-child(1) { text-align: center; color: #64748b; }
+.doctor-top10-table td:nth-child(4),
+.doctor-top10-table td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
+.doctor-top10-table--name { font-weight: 600; color: #0f172a; }
+.doctor-top10-table--pct { font-weight: 500; }
+.doctor-top10-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.doctor-chart-skeleton {
+  height: 340px;
+  background: linear-gradient(
+    105deg,
+    #f8fafc 0%,
+    #f1f5f9 20%,
+    #e2e8f0 40%,
+    #f1f5f9 60%,
+    #f8fafc 100%
+  );
+  background-size: 200% 100%;
+  animation: doctor-chart-shimmer 2s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes doctor-chart-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}

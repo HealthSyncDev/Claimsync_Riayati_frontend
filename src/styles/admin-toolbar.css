@@ -1,0 +1,47 @@
+/* Shared admin list toolbars — color-coded actions */
+
+.dr-toolbar-actions .btn {
+    border: none;
+    font-weight: 600;
+}
+
+.dr-toolbar-actions .dr-btn-refresh {
+    background: #64748b;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.dr-toolbar-actions .dr-btn-refresh:hover:not(:disabled) {
+    background: #475569;
+    color: #fff;
+}
+
+.dr-toolbar-actions .dr-btn-refresh:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.dr-toolbar-actions .dr-btn-bulk {
+    background: #059669;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.25);
+}
+
+.dr-toolbar-actions .dr-btn-bulk:hover:not(:disabled) {
+    background: #047857;
+    color: #fff;
+}
+
+.dr-toolbar-actions .dr-btn-bulk:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.dr-toolbar-actions .dr-btn-add.btn-primary {
+    background: #2563eb;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35);
+}
+
+.dr-toolbar-actions .dr-btn-add.btn-primary:hover:not(:disabled) {
+    background: #1d4ed8;
+}

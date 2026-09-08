@@ -1,0 +1,311 @@
+/* =========================
+   Topbar
+   ========================= */
+.app-header-stack {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: none;
+    box-shadow: none;
+}
+
+.app-header-stack .topbar {
+    position: relative;
+    top: auto;
+    z-index: 20;
+    box-shadow: none;
+    border-bottom: 1px solid #e2e8f0;
+    background: transparent;
+}
+
+.app-header-stack--dashboard {
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.app-header-stack--dashboard .dashboard-nav-header {
+    padding-top: 8px;
+}
+
+.topbar {
+    height: 56px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.topbar-left {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.topbar-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.topbar-eyebrow {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    line-height: 1;
+}
+
+.topbar-title {
+    font-size: 1.125rem;
+    font-weight: 650;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.02em;
+}
+
+.topbar-subtitle {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: min(56ch, 100%);
+}
+
+.topbar--workspace {
+    height: auto;
+    min-height: 56px;
+    padding: 10px 20px;
+    align-items: center;
+}
+
+.topbar--workspace .topbar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.app-header-stack--workspace {
+    border-bottom: 1px solid #e8eef5;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+    background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* User chip + dropdown */
+.topbar-user {
+    position: relative;
+}
+
+.topbar-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 4px 10px 4px 4px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.topbar-user-chip:hover,
+.topbar-user-chip--open {
+    background: #fff;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.topbar-user-chip--open .topbar-user-chev {
+    transform: rotate(180deg);
+    color: #475569;
+}
+
+.topbar-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.45);
+}
+
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    max-width: 150px;
+}
+
+.topbar-user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 170px;
+}
+
+.topbar-user-role {
+    font-size: 0.6875rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+}
+
+.topbar-user-chev {
+    color: #94a3b8;
+    margin-right: 2px;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.topbar-user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.18);
+    padding: 6px;
+    z-index: 30;
+    overflow: hidden;
+}
+
+.topbar-user-menu-head {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 4px;
+}
+
+.topbar-user-menu-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.topbar-user-menu-email {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.topbar-user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    color: var(--text-body);
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+    text-decoration: none;
+}
+
+.topbar-user-menu-item:hover {
+    background: #f8fafc;
+    color: var(--text-main);
+}
+
+.topbar-user-menu-item.is-danger {
+    color: var(--status-error-fg);
+}
+
+.topbar-user-menu-item.is-danger:hover {
+    background: var(--status-error-bg);
+    color: var(--status-error-fg);
+}
+
+.topbar-user-menu-sep {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 4px 0;
+}
+
+@media (max-width: 900px) {
+  .dashboard-nav-header-tabs {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .dashboard-nav-header-user {
+    margin-left: auto;
+  }
+
+  .dashboard-nav-header-user .topbar-user-info {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .topbar--workspace {
+        padding: 8px 12px;
+    }
+
+    .topbar-title {
+        font-size: 1rem;
+    }
+
+    .topbar--workspace .topbar-title {
+        font-size: 1.0625rem;
+    }
+
+    .topbar-subtitle {
+        display: none;
+    }
+
+    .topbar-user-info {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .topbar {
+        padding: 0 10px;
+        height: 52px;
+    }
+}

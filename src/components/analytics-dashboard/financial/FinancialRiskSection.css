@@ -1,0 +1,102 @@
+/* Financial Risk — aligned with Overview / Rejection / Doctor patterns */
+.financial-risk-section {
+  padding: 0 0 48px;
+  animation: financial-fade-in 0.4s ease-out;
+}
+
+@keyframes financial-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.financial-risk-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.financial-risk-api-error {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: var(--status-error-bg, #fef2f2);
+  color: var(--status-error, #b91c1c);
+  border-radius: 10px;
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  font-size: 0.9rem;
+}
+
+.financial-risk-grid-2 > * {
+  animation: financial-card-in 0.35s ease-out backwards;
+}
+
+.financial-risk-grid-2 > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.financial-risk-grid-2 > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+@keyframes financial-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.financial-risk-category-table-wrap {
+  overflow-x: auto;
+  max-height: 260px;
+}
+
+.financial-risk-category-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.financial-risk-category-table th {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+}
+
+.financial-risk-category-table th:not(:first-child) {
+  text-align: right;
+}
+
+.financial-risk-category-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-variant-numeric: tabular-nums;
+}
+
+.financial-risk-category-table td:not(:first-child) {
+  text-align: right;
+}
+
+.financial-risk-category-table tr:last-child td {
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .financial-risk-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

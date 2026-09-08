@@ -1,0 +1,143 @@
+/* Claim Type Breakdown Table — IP/OP/Total with dark blue header, yellow rows, gray total */
+.claim-type-table-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.claim-type-table-wrap {
+  overflow: hidden;
+}
+
+.claim-type-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+/* Header — dark blue, white text */
+.claim-type-th {
+  background: #1e3a5f;
+  color: white;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: none;
+  padding: 10px 8px;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  border: 1px solid #2d4a6f;
+}
+
+.claim-type-th:first-child {
+  text-align: left;
+  padding-left: 16px;
+  width: 8% !important;
+}
+
+.claim-type-th:last-child {
+  padding-right: 16px;
+}
+
+.claim-type-th--left {
+  text-align: left;
+}
+
+.claim-type-th--right {
+  text-align: right;
+}
+
+/* Data rows — IP, OP: light yellow */
+.claim-type-tr--data {
+  background: #fefce8;
+}
+
+.claim-type-tr--data .claim-type-td {
+  border: 1px solid #e2e8f0;
+}
+
+/* Total row — light gray, bold */
+.claim-type-tr--total {
+  background: #f1f5f9;
+  font-weight: 700;
+}
+
+.claim-type-tr--total .claim-type-td {
+  border: 1px solid #cbd5e1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.claim-type-td {
+  padding: 8px 8px;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid #e2e8f0;
+}
+
+.claim-type-td:first-child {
+  padding-left: 16px;
+  font-weight: 600;
+}
+
+.claim-type-td:last-child {
+  padding-right: 16px;
+}
+
+.claim-type-td--left {
+  text-align: left;
+}
+
+.claim-type-td--right {
+  text-align: right;
+}
+
+.claim-type-td--pct {
+  font-weight: 500;
+}
+
+.claim-type-tr--total .claim-type-td--pct {
+  color: #0f172a;
+}
+
+.claim-type-table-skeleton {
+  height: 180px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 0%,
+    #e2e8f0 50%,
+    #f1f5f9 100%
+  );
+  background-size: 200% 100%;
+  animation: claim-type-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes claim-type-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (max-width: 768px) {
+  .claim-type-th,
+  .claim-type-td {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .claim-type-th:first-child,
+  .claim-type-td:first-child {
+    padding-left: 16px;
+  }
+
+  .claim-type-th:last-child,
+  .claim-type-td:last-child {
+    padding-right: 16px;
+  }
+}

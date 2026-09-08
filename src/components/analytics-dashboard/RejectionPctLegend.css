@@ -1,0 +1,28 @@
+.rejection-pct-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.rejection-pct-legend-item {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.rejection-pct-legend-item--good {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.rejection-pct-legend-item--warn {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.rejection-pct-legend-item--critical {
+  color: #b91c1c;
+  background: rgba(239, 68, 68, 0.12);
+}

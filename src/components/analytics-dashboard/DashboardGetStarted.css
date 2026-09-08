@@ -1,0 +1,120 @@
+.dashboard-get-started {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: min(360px, calc(100dvh - 260px));
+  max-height: calc(100dvh - 240px);
+  padding: 0;
+  overflow: hidden;
+}
+
+.dashboard-get-started-panel {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 32px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(37, 99, 235, 0.08), transparent 55%),
+    radial-gradient(90% 120% at 100% 100%, rgba(14, 165, 233, 0.06), transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow: hidden;
+}
+
+.dashboard-get-started-visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dashboard-get-started-orb {
+  position: absolute;
+  top: -40px;
+  right: -20px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 70%);
+  filter: blur(2px);
+}
+
+.dashboard-get-started-orb--2 {
+  top: auto;
+  right: auto;
+  bottom: -50px;
+  left: -30px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.12), transparent 70%);
+}
+
+.dashboard-get-started-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 400px;
+}
+
+.dashboard-get-started-kicker {
+  margin: 0 0 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.dashboard-get-started-title {
+  margin: 0 0 8px;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.dashboard-get-started-lead {
+  margin: 0 0 16px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.dashboard-get-started-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dashboard-get-started-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 720px) {
+  .dashboard-get-started {
+    height: auto;
+    max-height: none;
+    align-items: flex-start;
+  }
+
+  .dashboard-get-started-panel {
+    padding: 22px 20px;
+  }
+
+  .dashboard-get-started-title {
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,59 @@
+.last-sync-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 6px 12px;
+    background: var(--surface-sunken, #f8fafc);
+    border: 1px solid var(--border-subtle, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    min-width: 128px;
+}
+
+.last-sync-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted, #64748b);
+    line-height: 1.2;
+}
+
+.last-sync-value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-main, #0f172a);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    line-height: 1.25;
+}
+
+.last-sync-date,
+.last-sync-time {
+    display: block;
+}
+
+/* Report toolbar — matches stats-pill placement (right of Entries) */
+.last-sync-indicator.toolbar-last-sync {
+    align-items: flex-end;
+    min-width: 140px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.last-sync-indicator.toolbar-last-sync .last-sync-label {
+    font-size: 0.72rem;
+}
+
+.last-sync-indicator.toolbar-last-sync .last-sync-date,
+.last-sync-indicator.toolbar-last-sync .last-sync-time {
+    font-size: 0.88rem;
+    color: #2563eb;
+}

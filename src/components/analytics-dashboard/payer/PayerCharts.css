@@ -1,0 +1,23 @@
+.payer-chart-skeleton {
+  height: 340px;
+  background: linear-gradient(
+    105deg,
+    #f8fafc 0%,
+    #f1f5f9 20%,
+    #e2e8f0 40%,
+    #f1f5f9 60%,
+    #f8fafc 100%
+  );
+  background-size: 200% 100%;
+  animation: payer-chart-shimmer 2s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes payer-chart-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}

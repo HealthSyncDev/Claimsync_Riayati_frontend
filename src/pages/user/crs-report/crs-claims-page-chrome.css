@@ -1,0 +1,527 @@
+/**
+ * Shared toolbar + filter-panel chrome for Claim Details / Resubmission pages.
+ * Extracted from CRSReport.jsx inline styles so pages match without duplicating <style> blocks.
+ */
+
+@keyframes crsChromeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes crsChromePulse {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* --- Toolbar (matches CRS Claim Details) --- */
+.crs-claims-page-chrome .filter-toggle-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.crs-claims-page-chrome .filter-group-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.crs-claims-page-chrome .filter-group-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.crs-claims-page-chrome .btn-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.crs-claims-page-chrome .btn-filter-toggle:hover {
+    background: #f1f5f9;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.crs-claims-page-chrome .btn-filter-toggle.active {
+    background: #dbeafe;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.crs-claims-page-chrome .btn-filter-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+.crs-claims-page-chrome .filter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: #2563eb;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.crs-claims-page-chrome .export-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.crs-claims-page-chrome .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.crs-claims-page-chrome .btn-export:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #2563eb;
+    color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.crs-claims-page-chrome .btn-export svg {
+    width: 16px;
+    height: 16px;
+}
+
+.crs-claims-page-chrome .btn-export:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.crs-claims-page-chrome .column-visibility {
+    position: relative;
+}
+
+.crs-claims-page-chrome .column-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 50;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.12);
+    min-width: 240px;
+    width: max-content;
+    max-width: min(420px, 92vw);
+    max-height: min(380px, 55vh);
+    overflow-y: auto;
+}
+
+.crs-claims-page-chrome .column-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    font-size: 0.86rem;
+    cursor: pointer;
+    color: #334155;
+    border-radius: 6px;
+}
+
+.crs-claims-page-chrome .column-item:hover {
+    background: #f8fafc;
+}
+
+.crs-claims-page-chrome .stats-pill {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.crs-claims-page-chrome .stats-pill .label {
+    color: #64748b;
+}
+
+.crs-claims-page-chrome .stats-pill .value {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.crs-claims-page-chrome .stats-pill.crs-toolbar-entry-count {
+    white-space: nowrap;
+}
+
+/* --- Filter panel card --- */
+.crs-claims-page-chrome .filter-panel-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    animation: crsChromeSlideDown 0.3s ease-out;
+    overflow: visible;
+}
+
+.crs-claims-page-chrome .clear-all-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.crs-claims-page-chrome .clear-all-btn:hover {
+    background: #fecaca;
+    transform: translateY(-1px);
+}
+
+.crs-claims-page-chrome .filter-panel-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.crs-claims-page-chrome .filter-panel-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.crs-claims-page-chrome .filter-validation-message {
+    color: #b91c1c;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-right: auto;
+}
+
+.crs-claims-page-chrome .btn-apply-filters {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.crs-claims-page-chrome .btn-apply-filters:hover:not(:disabled) {
+    filter: brightness(1.05);
+}
+
+.crs-claims-page-chrome .btn-apply-filters:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Filter form grid (12-col, matches CRS / ActivityList) --- */
+.crs-claims-page-chrome .filter-form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    padding: 20px;
+    background: #f8fafc;
+}
+
+.crs-claims-page-chrome .col-span-12 {
+    grid-column: span 12;
+}
+.crs-claims-page-chrome .col-span-4 {
+    grid-column: span 4;
+}
+.crs-claims-page-chrome .col-span-3 {
+    grid-column: span 3;
+}
+.crs-claims-page-chrome .col-span-2 {
+    grid-column: span 2;
+}
+
+.crs-claims-page-chrome .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.crs-claims-page-chrome .form-group label {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-left: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.crs-claims-page-chrome .form-input,
+.crs-claims-page-chrome .form-select {
+    padding: 0 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background: white;
+    color: #334155;
+    width: 100%;
+    height: 34px;
+    line-height: 32px;
+    transition: border-color 0.2s;
+}
+
+.crs-claims-page-chrome select.form-select {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.crs-claims-page-chrome .form-input:focus,
+.crs-claims-page-chrome .form-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.05);
+}
+
+/* Branch multiselect */
+.crs-claims-page-chrome .branch-multiselect {
+    position: relative;
+    width: 100%;
+}
+.crs-claims-page-chrome .form-group.branch-select-wrap {
+    overflow: visible;
+}
+.crs-claims-page-chrome .branch-multiselect-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    color: #334155;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    min-height: 34px;
+}
+.crs-claims-page-chrome .branch-multiselect-trigger:hover {
+    border-color: #94a3b8;
+}
+.crs-claims-page-chrome .branch-multiselect-trigger-text {
+    flex: 1;
+    text-align: left;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.25;
+}
+.crs-claims-page-chrome .branch-multiselect-chevron {
+    color: #64748b;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+.crs-claims-page-chrome .branch-multiselect-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px 10px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.crs-claims-page-chrome .branch-multiselect-dropdown-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+}
+.crs-claims-page-chrome .branch-multiselect-clear-btn {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.crs-claims-page-chrome .branch-multiselect-clear-btn:hover {
+    background: #fee2e2;
+}
+.crs-claims-page-chrome .branch-multiselect-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 8px;
+}
+.crs-claims-page-chrome .branch-multiselect-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.crs-claims-page-chrome .branch-multiselect-option:hover {
+    background: #f1f5f9;
+}
+.crs-claims-page-chrome .branch-multiselect-option input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #94a3b8;
+    border-radius: 4px;
+    background: #fff;
+}
+.crs-claims-page-chrome .branch-multiselect-option input[type='checkbox']:checked {
+    background: #2563eb
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath fill='none' stroke='white' stroke-width='2' d='M1 5l3 3 7-7'/%3E%3C/svg%3E")
+        center/10px 8px no-repeat;
+    border-color: #2563eb;
+}
+.crs-claims-page-chrome .branch-multiselect-all {
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+}
+.crs-claims-page-chrome .branch-multiselect-all input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #94a3b8;
+    border-radius: 4px;
+    background: #fff;
+}
+.crs-claims-page-chrome .branch-multiselect-all input[type='checkbox']:checked {
+    background: #2563eb
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath fill='none' stroke='white' stroke-width='2' d='M1 5l3 3 7-7'/%3E%3C/svg%3E")
+        center/10px 8px no-repeat;
+    border-color: #2563eb;
+}
+
+.crs-claims-page-chrome .input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+/* Skeleton rows */
+.crs-claims-page-chrome .skeleton-line {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    margin-bottom: 0;
+    animation: crsChromePulse 1.5s infinite ease-in-out;
+}
+.crs-claims-page-chrome .width-40 {
+    width: 40%;
+}
+.crs-claims-page-chrome .width-80 {
+    width: 80%;
+}
+
+@media (max-width: 1024px) {
+    .crs-claims-page-chrome .filter-form-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .crs-claims-page-chrome .col-span-4 {
+        grid-column: span 6;
+    }
+    .crs-claims-page-chrome .col-span-3 {
+        grid-column: span 6;
+    }
+    .crs-claims-page-chrome .col-span-2 {
+        grid-column: span 3;
+    }
+}
+
+@media (max-width: 640px) {
+    .crs-claims-page-chrome .filter-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .crs-claims-page-chrome .col-span-12,
+    .crs-claims-page-chrome .col-span-4,
+    .crs-claims-page-chrome .col-span-3,
+    .crs-claims-page-chrome .col-span-2 {
+        grid-column: span 1;
+    }
+}

@@ -1,0 +1,284 @@
+/* Resubmission scope filter bar — single row */
+
+.resub-scope-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    --resub-scope-h: 32px;
+    --resub-scope-label-h: 16px;
+}
+
+.resub-scope-fields {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    flex-wrap: nowrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.resub-scope-field,
+.resub-scope-office-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.resub-scope-field .filter-label,
+.resub-scope-office-slot .filter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: var(--resub-scope-label-h);
+    margin: 0;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.resub-scope-office-slot .filter-group--office {
+    gap: 4px;
+    min-width: 0;
+    max-width: none;
+    flex: none;
+    width: 100%;
+    overflow: visible;
+}
+
+.resub-scope-field--sm {
+    flex: 0 0 84px;
+    width: 84px;
+}
+
+.resub-scope-field--md {
+    flex: 0 0 120px;
+}
+
+.resub-scope-field--lg,
+.resub-scope-field--office {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.resub-scope-office-slot {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 360px;
+    position: relative;
+    overflow: visible;
+}
+
+.resub-scope-office-slot:has(.filter-group--office-open) {
+    z-index: 250;
+}
+
+.resub-scope-label {
+    line-height: 1;
+}
+
+.resub-scope-pending-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    flex-shrink: 0;
+    animation: resub-scope-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes resub-scope-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+}
+
+.resub-scope-field .filter-select,
+.resub-scope-field .filter-readonly-value,
+.resub-scope-office-slot .dashboard-office-trigger {
+    width: 100%;
+    height: var(--resub-scope-h);
+    min-height: var(--resub-scope-h);
+    max-height: var(--resub-scope-h);
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #0f172a;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.resub-scope-office-slot .dashboard-office-trigger-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resub-scope-field .filter-select:hover,
+.resub-scope-office-slot .dashboard-office-trigger:hover {
+    border-color: #cbd5e1;
+}
+
+.resub-scope-field .filter-select:focus,
+.resub-scope-office-slot .dashboard-office-trigger--open,
+.resub-scope-office-slot .dashboard-office-trigger:focus-visible {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.resub-scope-field--pending .filter-label {
+    color: #2563eb;
+}
+
+.resub-scope-field--pending .filter-select,
+.resub-scope-field--pending .dashboard-office-trigger {
+    border-color: #60a5fa;
+    background: #f8fbff;
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.12),
+        inset 0 0 0 1px rgba(59, 130, 246, 0.05);
+}
+
+.resub-scope-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    height: var(--resub-scope-h);
+    margin-bottom: 0;
+}
+
+.resub-scope-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: var(--resub-scope-h);
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.resub-scope-reset:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+.resub-scope-bar .last-sync-indicator.resub-scope-sync,
+.resub-scope-bar .last-sync-indicator.toolbar-last-sync.resub-scope-sync {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    min-width: 0;
+    height: var(--resub-scope-h);
+    max-height: var(--resub-scope-h);
+    padding: 0 10px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+    gap: 8px;
+}
+
+.resub-scope-bar .last-sync-indicator.resub-scope-sync .last-sync-label {
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.resub-scope-bar .last-sync-indicator.resub-scope-sync .last-sync-value {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.6875rem;
+    color: #2563eb;
+    line-height: 1;
+}
+
+.resub-scope-bar .last-sync-indicator.resub-scope-sync .last-sync-date,
+.resub-scope-bar .last-sync-indicator.resub-scope-sync .last-sync-time {
+    display: inline;
+    font-size: 0.6875rem;
+    color: #2563eb;
+    line-height: 1;
+}
+
+.resub-scope-apply {
+    height: var(--resub-scope-h);
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f1f5f9;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.resub-scope-apply--active {
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 14px -6px rgba(37, 99, 235, 0.65);
+}
+
+.resub-scope-apply--active:hover:not(:disabled) {
+    filter: brightness(1.03);
+}
+
+.resub-scope-apply:disabled {
+    cursor: default;
+}
+
+@media (max-width: 720px) {
+    .resub-scope-office-slot {
+        max-width: none;
+    }
+
+    .resub-scope-reset span,
+    .resub-scope-bar .last-sync-indicator.resub-scope-sync .last-sync-label {
+        display: none;
+    }
+}

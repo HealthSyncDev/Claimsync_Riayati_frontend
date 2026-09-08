@@ -1,0 +1,53 @@
+.dashboard-scope-summary {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dashboard-scope-summary-line {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.dashboard-scope-summary-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.dashboard-scope-summary-value {
+  font-weight: 500;
+  color: #334155;
+}
+
+.dashboard-scope-summary-hint {
+  color: #94a3b8;
+}
+
+.dashboard-scope-summary-hint strong {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.dashboard-scope-summary-pending {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #b45309;
+}
+
+.dashboard-scope-summary--compact {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.dashboard-scope-summary--compact .dashboard-scope-summary-line {
+  font-size: 0.75rem;
+}
+
+.dashboard-scope-summary--compact .dashboard-scope-summary-pending {
+  margin-top: 4px;
+  font-size: 0.6875rem;
+}

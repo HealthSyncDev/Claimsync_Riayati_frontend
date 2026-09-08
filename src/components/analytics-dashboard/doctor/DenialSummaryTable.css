@@ -1,0 +1,26 @@
+/* Wider table + horizontal scroll for denial-by-type columns */
+.denial-summary-type-wrap {
+  overflow-x: auto;
+}
+
+.doctor-table--denial-by-type {
+  table-layout: auto;
+  min-width: 800px;
+}
+
+.denial-type-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  line-height: 1.2;
+}
+
+.denial-type-cell__amt {
+  font-variant-numeric: tabular-nums;
+}
+
+.denial-type-cell__pct {
+  font-size: 0.7rem;
+  color: #64748b;
+}

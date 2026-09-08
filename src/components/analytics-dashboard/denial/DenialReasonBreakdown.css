@@ -1,0 +1,151 @@
+/* Denial Reason Breakdown — root cause analysis */
+.denial-reason-breakdown {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.denial-reason-breakdown-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.denial-reason-breakdown-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 24px 0;
+}
+
+.denial-reason-breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.denial-reason-breakdown-grid .denial-reason-table-card {
+  grid-column: 1 / -1;
+}
+
+.denial-reason-table-card.analytics-card {
+  overflow: hidden;
+}
+
+.denial-reason-wrap {
+  max-height: 360px;
+  overflow: auto;
+  margin: 0 -4px;
+}
+
+.denial-reason-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.denial-reason-th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fafc;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.denial-reason-th--label {
+  text-align: left;
+}
+
+.denial-reason-th--num {
+  text-align: right;
+}
+
+.denial-reason-th--sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.denial-reason-th--sortable:hover {
+  color: #334155;
+}
+
+.denial-reason-th .sort-icon {
+  margin-left: 4px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.denial-reason-tr {
+  transition: background 0.15s;
+}
+
+.denial-reason-tr:hover {
+  background: #f8fafc;
+}
+
+.denial-reason-tr--total {
+  font-weight: 700;
+  background: #f1f5f9;
+  border-top: 2px solid #e2e8f0;
+}
+
+.denial-reason-tr--total:hover {
+  background: #e2e8f0;
+}
+
+.denial-reason-td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.denial-reason-td--label {
+  text-align: left;
+  font-weight: 500;
+}
+
+.denial-reason-td--num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.denial-reason-tr--total .denial-reason-td {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.denial-reason-skeleton {
+  background: linear-gradient(
+    105deg,
+    #f8fafc 0%,
+    #f1f5f9 20%,
+    #e2e8f0 40%,
+    #f1f5f9 60%,
+    #f8fafc 100%
+  );
+  background-size: 200% 100%;
+  animation: denial-reason-shimmer 2s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes denial-reason-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .denial-reason-breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}

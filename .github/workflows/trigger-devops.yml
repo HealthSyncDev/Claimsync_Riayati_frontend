@@ -1,0 +1,28 @@
+name: Trigger DevOps Deployment
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+
+jobs:
+  trigger-devops:
+    if: github.event.pull_request.merged == true
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Trigger ClaimSync DevOps Deployment
+        run: |
+
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DEVOPS_TRIGGER_TOKEN }}" \
+            https://api.github.com/repos/curecloudtechnology/ClaimSync_DevOps/actions/workflows/01-deploy.yml/dispatches \
+            -d '{
+              "ref":"master"
+            }'

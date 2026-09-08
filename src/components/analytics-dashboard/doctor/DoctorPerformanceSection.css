@@ -1,0 +1,198 @@
+/* Doctor Performance — aligned with Overview / Rejection patterns */
+.doctor-performance-section {
+  padding: 0 0 48px;
+  width: 100%;
+  animation: doctor-fade-in 0.4s ease-out;
+}
+
+@keyframes doctor-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-section {
+  margin-bottom: 24px;
+  transition: opacity 0.2s;
+}
+
+.doctor-view--doctor .doctor-section--specialty {
+  opacity: 0.55;
+}
+
+.doctor-view--speciality .doctor-section--hero {
+  opacity: 0.55;
+}
+
+.doctor-section-card--dimmed {
+  opacity: 0.92;
+}
+
+.doctor-specialty-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.doctor-specialty-grid > * {
+  min-width: 0;
+}
+
+.doctor-anomalies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.doctor-anomaly {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.doctor-anomaly--warn {
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.doctor-anomaly--error {
+  color: #be123c;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+
+.doctor-tr--highlight {
+  background: rgba(99, 102, 241, 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.25);
+}
+
+.doctor-tr--clickable {
+  cursor: pointer;
+}
+
+.doctor-tr--clickable:hover {
+  background: #f1f5f9;
+}
+
+.doctor-drilldown-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.doctor-drilldown-panel {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.25);
+}
+
+.doctor-drilldown-panel h3 {
+  margin: 0 0 4px;
+  font-size: 1.125rem;
+  color: #0f172a;
+}
+
+.doctor-drilldown-sub {
+  margin: 0 0 16px;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.doctor-drilldown-stats {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.doctor-drilldown-stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.doctor-drilldown-stats dt {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.doctor-drilldown-stats dd {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.doctor-drilldown-note {
+  margin: 0 0 16px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.doctor-drilldown-close {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.overview-data-toolbar--skeleton {
+  height: 48px;
+  margin-bottom: 16px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: doctor-table-shimmer 1.5s ease-in-out infinite;
+  border-radius: 10px;
+}
+
+@media (max-width: 1100px) {
+  .doctor-specialty-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .doctor-performance-section--print .doctor-data-toolbar,
+  .doctor-performance-section--print .doctor-rr-trigger,
+  .doctor-performance-section--print .active-filter-chips,
+  .doctor-drilldown-backdrop {
+    display: none !important;
+  }
+
+  .doctor-performance-section--print .kpi-bento {
+    grid-template-columns: repeat(4, 1fr);
+    break-after: avoid;
+  }
+
+  .doctor-performance-section--print .doctor-rr-body {
+    display: block !important;
+    border: none;
+    padding: 0;
+  }
+
+  .doctor-view--doctor .doctor-section--specialty,
+  .doctor-view--speciality .doctor-section--hero {
+    opacity: 1;
+  }
+}

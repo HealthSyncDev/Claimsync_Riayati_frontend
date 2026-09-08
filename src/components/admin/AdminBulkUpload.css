@@ -1,0 +1,244 @@
+.dr-admin-bulk-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.dr-bulk-upload-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* Hover target: bridge + popover stay “warmed” so the panel doesn’t flicker off */
+.dr-help-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Invisible hover bridge between ? button and popover (closes the 8px gap) */
+.dr-help-wrap::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    top: 100%;
+    height: 14px;
+    z-index: 1998;
+}
+
+.dr-help-trigger {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--bg-hover, #f1f5f9);
+    color: var(--text-muted, #64748b);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: help;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.dr-help-trigger:hover,
+.dr-help-wrap:focus-within .dr-help-trigger {
+    background: color-mix(in srgb, var(--primary-color, #2563eb) 12%, var(--bg-hover, #f1f5f9));
+    border-color: color-mix(in srgb, var(--primary-color, #2563eb) 35%, var(--border-color, #e2e8f0));
+    color: var(--primary-color, #2563eb);
+}
+
+/* Anchor right so wide panels open leftward and don’t cover “Add …” */
+.dr-help-popover {
+    display: none;
+    position: absolute;
+    z-index: 2000;
+    left: auto;
+    right: 0;
+    top: calc(100% + 6px);
+    transform: none;
+
+    width: min(720px, calc(100vw - 32px));
+    min-width: 260px;
+    box-sizing: border-box;
+    padding: 14px 16px 16px;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    box-shadow:
+        0 18px 50px -12px rgba(15, 23, 42, 0.25),
+        0 0 0 1px color-mix(in srgb, var(--border-color, #e2e8f0) 80%, transparent);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--text-primary, #0f172a);
+    text-align: left;
+    font-weight: 400;
+    cursor: default;
+    pointer-events: auto;
+}
+
+.dr-help-popover strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.875rem;
+    color: var(--text-primary, #0f172a);
+    font-weight: 600;
+}
+
+.dr-help-intro {
+    margin: 0 0 10px;
+    color: var(--text-muted, #64748b);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.dr-help-warning {
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--status-error, #dc2626) 35%, var(--border-color, #e2e8f0));
+    background: var(--status-error-bg, #fef2f2);
+    color: var(--status-error, #b91c1c);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.dr-help-footer {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+    color: var(--text-muted, #64748b);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.dr-help-table-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin: 0 -4px;
+    padding: 2px 4px 6px;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.dr-help-table-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.dr-help-table-scroll::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text-muted, #64748b) 35%, transparent);
+    border-radius: 4px;
+}
+
+.dr-help-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    table-layout: auto;
+}
+
+.dr-help-table thead th {
+    background: var(--bg-hover, #f8fafc);
+    font-weight: 600;
+    color: var(--text-primary, #334155);
+    white-space: normal;
+    padding: 9px 12px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    text-align: left;
+    vertical-align: bottom;
+}
+
+.dr-help-th-title {
+    display: block;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.dr-help-th-aliases {
+    display: block;
+    margin-top: 4px;
+    font-weight: 400;
+    font-size: 0.6875rem;
+    line-height: 1.35;
+    color: var(--text-muted, #64748b);
+    white-space: normal;
+}
+
+.dr-help-table tbody td {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dr-help-wrap:hover .dr-help-popover,
+.dr-help-wrap:focus-within .dr-help-popover {
+    display: block;
+}
+
+/* Fixed toast: slides in from the right, auto-dismiss handled in JS */
+.dr-bulk-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10050;
+    max-width: min(440px, calc(100vw - 32px));
+    padding: 14px 18px;
+    border-radius: var(--radius-md, 10px);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    box-shadow:
+        0 20px 40px -12px rgba(15, 23, 42, 0.35),
+        0 0 0 1px color-mix(in srgb, var(--border-color, #e2e8f0) 70%, transparent);
+    animation: dr-bulk-toast-slide-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    pointer-events: none;
+}
+
+@keyframes dr-bulk-toast-slide-in {
+    from {
+        transform: translateX(calc(100% + 32px));
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dr-bulk-toast {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.dr-bulk-toast--ok {
+    background: var(--status-success-bg, #ecfdf5);
+    color: var(--status-success, #047857);
+}
+
+.dr-bulk-toast--err {
+    background: var(--status-error-bg);
+    color: var(--status-error);
+}

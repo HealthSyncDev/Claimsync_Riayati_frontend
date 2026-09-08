@@ -1,0 +1,9 @@
+.rejection-data-toolbar {
+  margin-bottom: 16px;
+}
+
+.rejection-data-toolbar--header-skeleton {
+  width: 220px;
+  height: 32px;
+  margin-bottom: 0;
+}

@@ -1,0 +1,114 @@
+.overview-data-toolbar--skeleton {
+  height: 48px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: overview-toolbar-shimmer 1.5s ease-in-out infinite;
+  border-radius: 10px;
+}
+
+@keyframes overview-toolbar-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.overview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.overview-section .exec-summary-card {
+  margin-bottom: 20px;
+}
+
+.overview-section .ipop-breakdown-section {
+  margin-bottom: 20px;
+}
+
+.overview-export-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.overview-export-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.overview-export-btn:hover:not(:disabled) {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.overview-export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dashboard-api-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  background: var(--status-error-bg, #fef2f2);
+  color: var(--status-error, #b91c1c);
+  border-radius: var(--radius-md, 10px);
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  font-size: 0.9rem;
+}
+
+.dashboard-api-error-icon {
+  font-size: 1.2rem;
+}
+
+.dashboard-api-error-retry {
+  margin-left: auto;
+  padding: 6px 14px;
+  background: var(--status-error, #b91c1c);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-api-error-retry:hover {
+  opacity: 0.9;
+}
+
+/* Hide duplicate section titles — shell already shows page title */
+.dashboard-shell-body .rejection-analytics-title,
+.dashboard-shell-body .doctor-performance-title,
+.dashboard-shell-body .payer-performance-title,
+.dashboard-shell-body .denial-analysis-title,
+.dashboard-shell-body .section-title {
+  display: none;
+}
+
+.dashboard-shell-body .rejection-analytics-subtitle,
+.dashboard-shell-body .doctor-performance-subtitle,
+.dashboard-shell-body .payer-performance-subtitle,
+.dashboard-shell-body .denial-analysis-subtitle,
+.dashboard-shell-body .section-subtitle {
+  display: none;
+}
+
+.dashboard-shell-body .rejection-analytics-header,
+.dashboard-shell-body .doctor-performance-header,
+.dashboard-shell-body .payer-performance-header,
+.dashboard-shell-body .denial-analysis-header {
+  margin-bottom: 12px;
+}
