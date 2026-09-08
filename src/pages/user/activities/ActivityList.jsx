@@ -22,20 +22,24 @@ const activityTotalsFromApiRow = (row) => {
     if (!row || typeof row !== 'object') return null;
     const n = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
     return {
-        netAmt: n(row.netAmt),
-        initialRejectedAmt: n(row.initialRejectedAmt),
-        unprocessedAmt: n(row.unprocessedAmt),
-        writeOffAmt: n(row.writeOffAmt),
-        remittedAmt: n(row.remittedAmt),
-        lastRemittedAmount: n(row.lastRemittedAmount),
-        rejectedAmt: n(row.rejectedAmt),
-        settledAmt: n(row.settledAmt),
-        rejectionPercentage: n(row.rejectionPercentage),
+        netAmt: n(row.netAmt ?? row.NetAmt),
+        initialNetAmt: n(row.initialNetAmt ?? row.InitialNetAmt),
+        initialRejectedAmt: n(row.initialRejectedAmt ?? row.InitialRejectedAmt),
+        unprocessedAmt: n(row.unprocessedAmt ?? row.UnprocessedAmt),
+        writeOffAmt: n(row.writeOffAmt ?? row.WriteOffAmt),
+        remittedAmt: n(row.remittedAmt ?? row.RemittedAmt),
+        lastRemittedAmount: n(row.lastRemittedAmount ?? row.LastRemittedAmount),
+        rejectedAmt: n(row.rejectedAmt ?? row.RejectedAmt),
+        settledAmt: n(row.settledAmt ?? row.SettledAmt),
+        rejectionPercentage: n(row.rejectionPercentage ?? row.RejectionPercentage),
+        grossAmt: n(row.grossAmt ?? row.GrossAmt),
+        patientShare: n(row.patientShare ?? row.PatientShare),
     };
 };
 
 const SEARCH_ON_OPTIONS = [
     { label: 'Select', value: '' },
+    { label: 'Transaction Date', value: 'TransactionDate' },
     { label: 'Submission Transaction Date', value: 'SubmissionTransactionDate' },
     { label: 'Remittance Transaction Date', value: 'RemittanceTransactionDate' },
     { label: 'Settlement Date', value: 'SettlementDate' },
@@ -59,6 +63,29 @@ const MONTH_TO_NUMBER = {
 };
 
 const activityListMemoryCache = {};
+
+const unwrapOfficesList = (raw) => {
+    if (Array.isArray(raw)) return raw;
+    if (Array.isArray(raw?.data)) return raw.data;
+    if (Array.isArray(raw?.offices)) return raw.offices;
+    if (Array.isArray(raw?.content)) return raw.content;
+    return [];
+};
+
+const officeIdOf = (office) =>
+    String(office?.officeId ?? office?.office_id ?? office?.id ?? '').trim();
+
+const facilityIdOf = (office) =>
+    String(office?.facilityId ?? office?.facility_id ?? '').trim();
+
+const officeNameOf = (office) =>
+    String(
+        office?.officeName
+        ?? office?.office_name
+        ?? office?.facilityName
+        ?? office?.name
+        ?? ''
+    ).trim();
 
 const ActivityList = () => {
     const { user } = useAuth();
@@ -100,8 +127,8 @@ const ActivityList = () => {
     const resolveActivityOfficeIds = useCallback((filters = {}) => {
         const permissionType = user?.permission || 'Office';
         const allOfficeIds = (officesList || [])
-            .filter((o) => o?.officeId != null)
-            .map((o) => String(o.officeId));
+            .map(officeIdOf)
+            .filter(Boolean);
 
         if ((filters.facilityIds?.length || 0) > 0) {
             return filters.facilityIds.map((id) => String(id));
@@ -121,9 +148,10 @@ const ActivityList = () => {
         const query = new URLSearchParams();
         if (officeIds.length === 0) return { officeIds: [], query };
 
+        query.set('officeId', officeIds.join(','));
         query.set('officeIds', officeIds.join(','));
         if (includePagination) {
-            query.set('page', String(Math.max((targetPage || 1) - 1, 0)));
+            query.set('page', String(Math.max(targetPage || 1, 1)));
             query.set('size', String(itemsPerPage));
         }
 
@@ -165,12 +193,9 @@ const ActivityList = () => {
         if (!user) return;
         const loadBaseLookups = async () => {
             try {
-                const officesData = await apiFetch('/api/offices/basic');
-
-                const offices = Array.isArray(officesData) ? officesData : officesData?.data;
-                if (offices?.length > 0) {
-                    setOfficesList(offices);
-                }
+                const officesData = await apiFetch('/api/offices/active');
+                const offices = unwrapOfficesList(officesData);
+                setOfficesList(offices);
             } catch (err) {
                 console.error('Error fetching lookups:', err);
             }
@@ -191,7 +216,7 @@ const ActivityList = () => {
             console.warn('[ActivityList] Skipping fetch: no officeIds resolved. user.officeId/permission:', user?.officeId, user?.permission, 'officesList:', officesList?.length);
             setActivities([]);
             setActivityApiTotals(null);
-            setServerPagination((prev) => ({ ...prev, totalElements: 0, totalPages: 0, page: 0, size: itemsPerPage }));
+            setServerPagination((prev) => ({ ...prev, totalElements: 0, totalPages: 0, page: 1, size: itemsPerPage }));
             setError('Cannot load activity report: no office assigned to your account. Please contact admin.');
             setLoading(false);
             setPageLoading(false);
@@ -227,7 +252,7 @@ const ActivityList = () => {
 
             const totalElements = Number(data?.totalElements ?? items.length ?? 0);
             const totalPages = Number(data?.totalPages ?? (totalElements > 0 ? Math.ceil(totalElements / itemsPerPage) : 0));
-            const page = Number(data?.page ?? Math.max(targetPage - 1, 0));
+            const page = Number(data?.page ?? Math.max(targetPage || 1, 1));
             const size = Number(data?.size ?? itemsPerPage);
 
             setServerPagination({ totalElements, totalPages, page, size });
@@ -261,12 +286,16 @@ const ActivityList = () => {
     // --- Derived Dropdown Options ---
     const uniqueFacilities = useMemo(
         () => (officesList || [])
-            .filter((o) => o?.officeId != null)
-            .map((o) => ({
-                officeId: String(o.officeId),
-                facilityId: o.facilityId || '',
-                officeName: o.officeName || '',
-            })),
+            .map((o) => {
+                const officeId = officeIdOf(o);
+                if (!officeId) return null;
+                return {
+                    officeId,
+                    facilityId: facilityIdOf(o),
+                    officeName: officeNameOf(o),
+                };
+            })
+            .filter(Boolean),
         [officesList]
     );
 
@@ -596,110 +625,126 @@ const ActivityList = () => {
         return '-';
     };
 
-    // Column Configuration - Full schema with fallback to "-"
-    const columns = useMemo(() => [
-        { id: 'facilityGroupId', label: 'Facility group ID', minWidth: '120px', render: (row) => val(row, 'facilityGroupId', 'FacilityGroupId', 'claim?.facilityGroupId', 'claim?.FacilityGroupId', 'claim?.facility_group_id') },
-        { id: 'healthAuthority', label: 'Health authority', minWidth: '120px', render: (row) => val(row, 'healthAuthority', 'HealthAuthority', 'claim?.healthAuthority', 'claim?.HealthAuthority', 'claim?.health_authority') },
-        { id: 'facilityId', label: 'Facility ID', minWidth: '120px', render: (row) => val(row, 'facilityId', 'FacilityID', 'claim?.facilityId', 'claim?.providerId', 'providerId') },
-        { id: 'facilityName', label: 'Facility name', minWidth: '150px', render: (row) => val(row, 'facilityName', 'Facility_Name', 'facility_name') },
-        { id: 'invoiceNo', label: 'Invoice no.', minWidth: '120px', render: (row) => val(row, 'invoiceNo', 'InvoiceNo') },
-        { id: 'patientId', label: 'Patient ID', minWidth: '120px', render: (row) => val(row, 'patientId', 'PatientID', 'PatientId') },
-        { id: 'transactionDate', label: 'Transaction date', minWidth: '140px', render: (row) => formatDate(val(row, 'transactionDate', 'TransactionDate')) },
-        { id: 'activityStartDate', label: 'Activity start date', minWidth: '152px', render: (row) => formatDate(val(row, 'activityStartDate', 'ActivityStartDate')) },
-        { id: 'encounterType', label: 'Encounter type', minWidth: '120px', render: (row) => val(row, 'encounterType', 'EncounterType') },
-        { id: 'encounterStartDate', label: 'Encounter start date', minWidth: '158px', render: (row) => formatDate(val(row, 'encounterStartDate', 'EncounterStartDate'), { includeTime: false }) },
-        { id: 'encounterEndDate', label: 'Encounter end date', minWidth: '150px', render: (row) => formatDate(val(row, 'encounterEndDate', 'EncounterEndDate')) },
-        { id: 'claimActivityNumber', label: 'Claim activity no.', minWidth: '150px', render: (row) => val(row, 'claimActivityNumber', 'ClaimActivityNumber') },
-        { id: 'cptCode', label: 'CPT code', minWidth: '100px', render: (row) => <span className="code-badge">{val(row, 'cptCode', 'CPTCode')}</span> },
-        { id: 'cptCategory', label: 'CPT category', minWidth: '110px', render: (row) => val(row, 'cptCategory', 'CPTCategory') },
-        { id: 'cptType', label: 'CPT type', minWidth: '100px', render: (row) => val(row, 'cptType', 'CPTType') },
-        { id: 'quantity', label: 'Quantity', minWidth: '80px', render: (row) => val(row, 'quantity', 'Quantity') },
-        { id: 'orderingClinician', label: 'Ordering clinician', minWidth: '130px', render: (row) => val(row, 'orderingClinician', 'OrderingClinician') },
-        { id: 'orderingClinicianName', label: 'Ordering clinician name', minWidth: '168px', render: (row) => val(row, 'orderingClinicianName', 'OrderingClinician_Name', 'ordering_clinician_name') },
-        { id: 'clinicianId', label: 'Clinician', minWidth: '120px', render: (row) => val(row, 'clinician', 'Clinician', 'clinicianId') },
-        { id: 'clinicianName', label: 'Clinician name', minWidth: '150px', render: (row) => val(row, 'clinicianName', 'Clinician_Name', 'clinician_name') },
-        { id: 'receiverId', label: 'Receiver ID', minWidth: '120px', render: (row) => val(row, 'receiverId', 'ReceiverID') },
-        { id: 'receiverName', label: 'Receiver name', minWidth: '150px', render: (row) => val(row, 'receiverName', 'Receiver_Name', 'receiver_name') },
-        { id: 'payerId', label: 'Payer ID', minWidth: '120px', render: (row) => val(row, 'payerId', 'PayerID') },
-        { id: 'payerName', label: 'Payer name', minWidth: '150px', render: (row) => val(row, 'payer', 'payerName', 'Payer_Name', 'payer_name') },
-        { id: 'memberId', label: 'Member ID', minWidth: '120px', render: (row) => val(row, 'memberId', 'MemberID', 'MemberId') },
-        { id: 'emiratesIdNumber', label: 'Emirates ID', minWidth: '130px', render: (row) => val(row, 'emiratesIdNumber', 'EmiratesIDNumber', 'EmiratesIdNumber') },
-        { id: 'idPayer', label: 'ID payer', minWidth: '100px', render: (row) => val(row, 'idPayer', 'IDPayer', 'IDpayer') },
-        { id: 'paymentReference', label: 'Payment reference', minWidth: '150px', render: (row) => <span className="font-mono text-xs">{val(row, 'paymentReference', 'PaymentReference')}</span> },
-        { id: 'priorAuthorizationId', label: 'Prior authorization ID', minWidth: '168px', render: (row) => val(row, 'priorAuthorizationId', 'PriorAuthorizationID', 'PriorAuthorizationId') },
-        { id: 'netAmt', label: 'Net amount', minWidth: '110px', align: 'right', className: 'font-bold text-primary', render: (row) => {
-            const n = val(row, 'netAmt', 'NetAmt', 'netAmount');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'initialNetAmt', label: 'Initial net amount', minWidth: '148px', align: 'right', render: (row) => {
-            const n = val(row, 'initialNetAmt', 'InitialNetAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'diagnosis', label: 'Diagnosis', minWidth: '120px', render: (row) => val(row, 'diagnosis', 'Diagnosis') },
-        { id: 'primaryDiagnosis', label: 'Primary diagnosis', minWidth: '140px', render: (row) => val(row, 'primaryDiagnosis', 'PrimaryDiagnosis') },
-        { id: 'lastResubmissionDate', label: 'Last resubmission date', minWidth: '168px', render: (row) => formatDate(val(row, 'lastResubmissionDate', 'LastResubmissionDate')) },
-        { id: 'firstRemittanceDate', label: 'First remittance date', minWidth: '168px', render: (row) => formatDate(val(row, 'firstRemittanceDate', 'FirstRemittanceDate')) },
-        { id: 'remittedAmt', label: 'Remitted amount', minWidth: '128px', align: 'right', render: (row) => {
-            const n = val(row, 'remittedAmt', 'RemittedAmt', 'paymentAmount');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'lastRemittanceDate', label: 'Last remittance date', minWidth: '160px', render: (row) => formatDate(val(row, 'lastRemittanceDate', 'LastRemittanceDate')) },
-        { id: 'lastRemittedAmount', label: 'Last remitted amount', minWidth: '160px', align: 'right', render: (row) => {
-            const n = val(row, 'lastRemittedAmount', 'LastRemittedAmount');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'initialRejectedAmt', label: 'InitialRejectedAmt', minWidth: '140px', align: 'right', render: (row) => {
-            const n = val(row, 'initialRejectedAmt', 'InitialRejectedAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'rejectedAmt', label: 'RejectedAmt', minWidth: '120px', align: 'right', render: (row) => {
-            const n = val(row, 'rejectedAmt', 'RejectedAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'rejectionPercentage', label: 'Rejection %', minWidth: '120px', align: 'right', render: (row) => val(row, 'rejectionPercentage', 'RejectionPercentage') },
-        { id: 'unprocessedAmt', label: 'Unprocessed amount', minWidth: '158px', align: 'right', render: (row) => {
-            const n = val(row, 'unprocessedAmt', 'UnprocessedAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'writeOffAmt', label: 'Write-off amount', minWidth: '138px', align: 'right', render: (row) => {
-            const n = val(row, 'writeOffAmt', 'WriteOffAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'writeOffStatus', label: 'Write-off status', minWidth: '128px', render: (row) => val(row, 'writeOffStatus', 'WriteOffStatus') },
-        { id: 'writeOffComment', label: 'Write-off comment', minWidth: '148px', render: (row) => val(row, 'writeOffComment', 'WriteOffComment') },
-        { id: 'lastDenialCode', label: 'Last denial code', minWidth: '132px', render: (row) => val(row, 'lastDenialCode', 'LastDenailCode') },
-        { id: 'denialComment', label: 'Denial comment', minWidth: '130px', render: (row) => val(row, 'denialComment', 'DenialComment') },
-        { id: 'denialCategory', label: 'Denial category', minWidth: '130px', render: (row) => val(row, 'denialCategory', 'DenialCategory') },
-        { id: 'denialType', label: 'Denial type', minWidth: '100px', render: (row) => val(row, 'denialType', 'DenialType') },
-        { id: 'initialDenialCode', label: 'Initial denial code', minWidth: '148px', render: (row) => val(row, 'initialDenialCode', 'InitialDenialCode') },
-        { id: 'initialDenialComment', label: 'Initial denial comment', minWidth: '168px', render: (row) => val(row, 'initialDenialComment', 'InitialDenialComment') },
-        { id: 'initialDenialCategory', label: 'Initial denial category', minWidth: '168px', render: (row) => val(row, 'initialDenialCategory', 'InitialDenialCategory') },
-        { id: 'initialDenialType', label: 'Initial denial type', minWidth: '148px', render: (row) => val(row, 'initialDenialType', 'InitialDenialType') },
-        { id: 'resubmissionCount', label: 'Resubmission count', minWidth: '150px', render: (row) => val(row, 'resubmissionCount', 'ResubmissionCount') },
-        { id: 'remittanceCount', label: 'Remittance count', minWidth: '148px', render: (row) => val(row, 'remittanceCount', 'RemittanceCount') },
-        { id: 'remittanceComment', label: 'Remittance comment', minWidth: '158px', render: (row) => val(row, 'remittanceComment', 'RemittanceComment') },
-        { id: 'resubmissionComment', label: 'Resubmission comment', minWidth: '168px', render: (row) => val(row, 'resubmissionComment', 'ResubmissionComment') },
-        { id: 'claimYear', label: 'Claim year', minWidth: '100px', render: (row) => val(row, 'claimYear', 'ClaimYear') },
-        { id: 'claimMonth', label: 'Claim month', minWidth: '110px', render: (row) => val(row, 'claimMonth', 'ClaimMonth') },
-        { id: 'allSubmissionFiles', label: 'All submission files', minWidth: '158px', render: (row) => val(row, 'allSubmissionFiles', 'AllSubmissionFiles') },
-        { id: 'submissionAllTransactionIds', label: 'Submission transaction IDs', minWidth: '188px', render: (row) => val(row, 'submissionAllTransactionIds', 'SubmissionAllTransactionIds') },
-        { id: 'lastSubmissionFile', label: 'Last submission file', minWidth: '160px', render: (row) => val(row, 'lastSubmissionFile', 'LastSubmissionFile') },
-        { id: 'lastSubmissionTransactionId', label: 'Last submission transaction ID', minWidth: '220px', render: (row) => val(row, 'lastSubmissionTransactionId', 'LastSubmissionTransactionId') },
-        { id: 'lastRemittanceFile', label: 'Last remittance file', minWidth: '158px', render: (row) => val(row, 'lastRemittanceFile', 'LastRemittanceFile') },
-        { id: 'lastRemittanceTransactionId', label: 'Last remittance transaction ID', minWidth: '218px', render: (row) => val(row, 'lastRemittanceTransactionId', 'LastRemittanceTransactionId') },
-        { id: 'settledAmt', label: 'Settled amount', minWidth: '128px', align: 'right', render: (row) => {
-            const n = val(row, 'settledAmt', 'SettledAmt');
-            return n === '-' ? '-' : formatCurrency(parseFloat(n));
-        }},
-        { id: 'receiptStatus', label: 'Receipt status', minWidth: '128px', render: (row) => val(row, 'receiptStatus', 'ReceiptStatus') },
-        { id: 'initialDateSettlement', label: 'Initial settlement date', minWidth: '168px', render: (row) => formatDate(val(row, 'initialDateSettlement', 'InitialDateSettlement')) },
-        { id: 'claimStatus', label: 'Claim status', minWidth: '120px', render: (row) => val(row, 'claimStatus', 'ClaimStatus') },
-        { id: 'paymentStatus', label: 'Payment status', minWidth: '128px', render: (row) => val(row, 'paymentStatus', 'PaymentStatus') },
-        { id: 'month', label: 'Month', minWidth: '100px', render: (row) => {
-            return val(row, 'month', 'Month');
-        }},
-        { id: 'type', label: 'Type', minWidth: '100px', render: (row) => val(row, 'type', 'Type') },
-    ], []);
+    // Column Configuration — every activity-report field is a table column (API order)
+    const columns = useMemo(() => {
+        const textCol = (id, label, paths, minWidth = '120px', render) => ({
+            id,
+            label,
+            minWidth,
+            render: render || ((row) => val(row, ...paths)),
+        });
+        const dateCol = (id, label, paths, minWidth = '150px', includeTime = true) => ({
+            id,
+            label,
+            minWidth,
+            render: (row) => formatDate(val(row, ...paths), { includeTime }),
+        });
+        const amtCol = (id, label, paths, minWidth = '128px', extra = {}) => ({
+            id,
+            label,
+            minWidth,
+            align: 'right',
+            className: extra.className,
+            render: (row) => {
+                const n = val(row, ...paths);
+                return n === '-' ? '-' : formatCurrency(parseFloat(n));
+            },
+        });
+
+        return [
+            textCol('id', 'ID', ['id'], '90px'),
+            textCol('officeId', 'Office ID', ['officeid', 'officeId', 'OfficeId', 'OfficeID'], '100px'),
+            textCol('facilityId', 'Facility ID', ['facilityId', 'FacilityID', 'claim?.facilityId']),
+            textCol('facilityName', 'Facility name', ['facilityName', 'Facility_Name', 'facility_name'], '150px'),
+            textCol('invoiceNo', 'Invoice no.', ['invoiceNo', 'InvoiceNo'], '180px'),
+            textCol('patientId', 'Patient ID', ['patientId', 'PatientID', 'PatientId']),
+            dateCol('transactionDate', 'Transaction date', ['transactionDate', 'TransactionDate'], '140px'),
+            dateCol('activityStartDate', 'Activity start date', ['activityStartDate', 'ActivityStartDate'], '152px'),
+            textCol('encounterType', 'Encounter type', ['encounterType', 'EncounterType']),
+            dateCol('encounterStartDate', 'Encounter start date', ['encounterStartDate', 'EncounterStartDate'], '158px', false),
+            dateCol('encounterEndDate', 'Encounter end date', ['encounterEndDate', 'EncounterEndDate']),
+            textCol('transferSource', 'Transfer source', ['transferSource', 'TransferSource']),
+            textCol('transferDestination', 'Transfer destination', ['transferDestination', 'TransferDestination'], '150px'),
+            textCol('claimActivityNumber', 'Claim activity no.', ['claimActivityNumber', 'ClaimActivityNumber'], '150px'),
+            textCol('cptCode', 'CPT code', ['cptCode', 'CPTCode'], '100px', (row) => (
+                <span className="code-badge">{val(row, 'cptCode', 'CPTCode')}</span>
+            )),
+            textCol('cptCategory', 'CPT category', ['cptCategory', 'CPTCategory'], '110px'),
+            textCol('cptType', 'CPT type', ['cptType', 'CPTType'], '100px'),
+            textCol('quantity', 'Quantity', ['quantity', 'Quantity'], '80px'),
+            textCol('orderingClinician', 'Ordering clinician', ['orderingClinician', 'OrderingClinician'], '130px'),
+            textCol('orderingClinicianName', 'Ordering clinician name', ['orderingClinicianName', 'OrderingClinician_Name', 'ordering_clinician_name'], '168px'),
+            textCol('clinicianId', 'Clinician', ['clinician', 'Clinician', 'clinicianId']),
+            textCol('clinicianName', 'Clinician name', ['clinicianName', 'Clinician_Name', 'clinician_name'], '150px'),
+            textCol('receiverId', 'Receiver ID', ['receiverId', 'ReceiverID']),
+            textCol('receiverName', 'Receiver name', ['receiverName', 'Receiver_Name', 'receiver_name'], '150px'),
+            textCol('payerId', 'Payer ID', ['payerId', 'PayerID']),
+            textCol('payerName', 'Payer name', ['payer', 'payerName', 'Payer_Name', 'payer_name'], '150px'),
+            textCol('memberId', 'Member ID', ['memberId', 'MemberID', 'MemberId']),
+            textCol('dispensedId', 'Dispensed ID', ['dispensedId', 'DispensedID', 'DispensedId']),
+            textCol('providerId', 'Provider ID', ['providerId', 'ProviderID', 'ProviderId']),
+            textCol('weight', 'Weight', ['weight', 'Weight'], '90px'),
+            dateCol('dateOfBirth', 'Date of birth', ['dateOfBirth', 'DateOfBirth'], '130px', false),
+            textCol('gender', 'Gender', ['gender', 'Gender'], '90px'),
+            textCol('nationalIdNumber', 'National ID', ['nationalIdNumber', 'NationalIDNumber', 'NationalIdNumber', 'emiratesIdNumber', 'EmiratesIDNumber', 'EmiratesIdNumber'], '140px'),
+            textCol('idPayer', 'ID payer', ['idPayer', 'IDPayer', 'IDpayer'], '100px'),
+            textCol('paymentReference', 'Payment reference', ['paymentReference', 'PaymentReference'], '150px', (row) => (
+                <span className="font-mono text-xs">{val(row, 'paymentReference', 'PaymentReference')}</span>
+            )),
+            textCol('priorAuthorizationId', 'Prior authorization ID', ['priorAuthorizationId', 'PriorAuthorizationID', 'PriorAuthorizationId'], '168px'),
+            textCol('dispensedActivityId', 'Dispensed activity ID', ['dispensedActivityId', 'DispensedActivityID', 'DispensedActivityId'], '160px'),
+            amtCol('netAmt', 'Net amount', ['netAmt', 'NetAmt', 'netAmount'], '110px', { className: 'font-bold text-primary' }),
+            amtCol('initialNetAmt', 'Initial net amount', ['initialNetAmt', 'InitialNetAmt'], '148px'),
+            textCol('diagnosis', 'Diagnosis', ['diagnosis', 'Diagnosis']),
+            textCol('primaryDiagnosis', 'Primary diagnosis', ['primaryDiagnosis', 'PrimaryDiagnosis'], '140px'),
+            dateCol('lastResubmissionDate', 'Last resubmission date', ['lastResubmissionDate', 'LastResubmissionDate'], '168px'),
+            dateCol('firstRemittanceDate', 'First remittance date', ['firstRemittanceDate', 'FirstRemittanceDate'], '168px'),
+            dateCol('lastRemittanceDate', 'Last remittance date', ['lastRemittanceDate', 'LastRemittanceDate'], '160px'),
+            amtCol('remittedAmt', 'Remitted amount', ['remittedAmt', 'RemittedAmt', 'paymentAmount']),
+            amtCol('lastRemittedAmount', 'Last remitted amount', ['lastRemittedAmount', 'LastRemittedAmount'], '160px'),
+            amtCol('initialRejectedAmt', 'Initial rejected amount', ['initialRejectedAmt', 'InitialRejectedAmt'], '160px'),
+            amtCol('rejectedAmt', 'Rejected amount', ['rejectedAmt', 'RejectedAmt']),
+            amtCol('unprocessedAmt', 'Unprocessed amount', ['unprocessedAmt', 'UnprocessedAmt'], '158px'),
+            { id: 'rejectionPercentage', label: 'Rejection %', minWidth: '120px', align: 'right', render: (row) => val(row, 'rejectionPercentage', 'RejectionPercentage') },
+            amtCol('writeOffAmt', 'Write-off amount', ['writeOffAmt', 'WriteOffAmt'], '138px'),
+            textCol('writeOffStatus', 'Write-off status', ['writeOffStatus', 'WriteOffStatus'], '128px'),
+            textCol('writeOffComment', 'Write-off comment', ['writeOffComment', 'WriteOffComment'], '148px'),
+            textCol('lastDenialCode', 'Last denial code', ['lastDenialCode', 'LastDenailCode', 'LastDenialCode'], '132px'),
+            textCol('denialComment', 'Denial comment', ['denialComment', 'DenialComment'], '130px'),
+            textCol('denialCategory', 'Denial category', ['denialCategory', 'DenialCategory'], '130px'),
+            textCol('denialType', 'Denial type', ['denialType', 'DenialType'], '100px'),
+            textCol('initialDenialCode', 'Initial denial code', ['initialDenialCode', 'InitialDenialCode'], '148px'),
+            textCol('initialDenialComment', 'Initial denial comment', ['initialDenialComment', 'InitialDenialComment'], '168px'),
+            textCol('initialDenialCategory', 'Initial denial category', ['initialDenialCategory', 'InitialDenialCategory'], '168px'),
+            textCol('initialDenialType', 'Initial denial type', ['initialDenialType', 'InitialDenialType'], '148px'),
+            textCol('resubmissionCount', 'Resubmission count', ['resubmissionCount', 'ResubmissionCount'], '150px'),
+            textCol('remittanceCount', 'Remittance count', ['remittanceCount', 'RemittanceCount'], '148px'),
+            textCol('remittanceComment', 'Remittance comment', ['remittanceComment', 'RemittanceComment'], '158px'),
+            textCol('resubmissionComment', 'Resubmission comment', ['resubmissionComment', 'ResubmissionComment'], '168px'),
+            textCol('claimYear', 'Claim year', ['claimYear', 'ClaimYear'], '100px'),
+            textCol('claimMonth', 'Claim month', ['claimMonth', 'ClaimMonth'], '110px'),
+            textCol('submissionAllTransactionIds', 'Submission transaction IDs', ['submissionAllTransactionIds', 'SubmissionAllTransactionIds'], '188px'),
+            textCol('lastSubmissionTransactionId', 'Last submission transaction ID', ['lastSubmissionTransactionId', 'LastSubmissionTransactionId'], '220px'),
+            textCol('lastRemittanceTransactionId', 'Last remittance transaction ID', ['lastRemittanceTransactionId', 'LastRemittanceTransactionId'], '218px'),
+            amtCol('settledAmt', 'Settled amount', ['settledAmt', 'SettledAmt']),
+            textCol('receiptStatus', 'Receipt status', ['receiptStatus', 'ReceiptStatus'], '128px'),
+            dateCol('initialDateSettlement', 'Initial settlement date', ['initialDateSettlement', 'InitialDateSettlement'], '168px'),
+            textCol('claimStatus', 'Claim status', ['claimStatus', 'ClaimStatus']),
+            textCol('paymentStatus', 'Payment status', ['paymentStatus', 'PaymentStatus'], '128px'),
+            textCol('month', 'Month', ['month', 'Month'], '100px'),
+            textCol('type', 'Type', ['type', 'Type'], '100px'),
+            amtCol('grossAmt', 'Gross amount', ['grossAmt', 'GrossAmt'], '120px'),
+            amtCol('patientShare', 'Patient share', ['patientShare', 'PatientShare'], '120px'),
+            textCol('resubmissionType', 'Resubmission type', ['resubmissionType', 'ResubmissionType'], '140px'),
+            textCol('patientType', 'Patient type', ['patientType', 'patient_type', 'PatientType']),
+            textCol('encounterTypeDescription', 'Encounter type description', ['encounterTypeDescription', 'encounter_type_description', 'EncounterTypeDescription'], '188px'),
+            textCol('facilityGroupId', 'Facility group ID', ['facilityGroupId', 'FacilityGroupId', 'claim?.facilityGroupId', 'claim?.FacilityGroupId', 'claim?.facility_group_id']),
+            textCol('healthAuthority', 'Health authority', ['healthAuthority', 'HealthAuthority', 'claim?.healthAuthority', 'claim?.HealthAuthority', 'claim?.health_authority']),
+            textCol('allSubmissionFiles', 'All submission files', ['allSubmissionFiles', 'AllSubmissionFiles'], '158px'),
+            textCol('lastSubmissionFile', 'Last submission file', ['lastSubmissionFile', 'LastSubmissionFile'], '160px'),
+            textCol('lastRemittanceFile', 'Last remittance file', ['lastRemittanceFile', 'LastRemittanceFile'], '158px'),
+        ];
+    }, []);
 
     /** null = use ACTIVITY_COLUMNS_HIDDEN_BY_DEFAULT; object = explicit on/off per id */
     const [visibleColumns, setVisibleColumns] = useState(() =>
@@ -1319,6 +1364,12 @@ const ActivityList = () => {
                                             } else if (api) {
                                                 if (col.id === 'netAmt') {
                                                     content = <strong className="text-warning">{fc(api.netAmt)}</strong>;
+                                                } else if (col.id === 'initialNetAmt') {
+                                                    content = <strong>{fc(api.initialNetAmt)}</strong>;
+                                                } else if (col.id === 'grossAmt') {
+                                                    content = <strong>{fc(api.grossAmt)}</strong>;
+                                                } else if (col.id === 'patientShare') {
+                                                    content = <strong>{fc(api.patientShare)}</strong>;
                                                 } else if (col.id === 'initialRejectedAmt') {
                                                     content = <strong>{fc(api.initialRejectedAmt)}</strong>;
                                                 } else if (col.id === 'rejectedAmt') {

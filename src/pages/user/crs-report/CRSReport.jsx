@@ -16,6 +16,7 @@ import { mapClaimItem, computeKpiFromMapped } from '../../../utils/claimMapper';
 
 const SEARCH_ON_OPTIONS = [
     { label: 'Select', value: '' },
+    { label: 'Transaction Date', value: 'TransactionDate' },
     { label: 'Submission Transaction Date', value: 'SubmissionTransactionDate' },
     { label: 'Remittance Transaction Date', value: 'RemittanceTransactionDate' },
     { label: 'Settlement Date', value: 'SettlementDate' },
@@ -59,6 +60,29 @@ const OFFICES_BASIC_CACHE = {
     offices: [],
     facilityNameMap: {},
     fetchedAt: 0,
+};
+
+const unwrapOfficesList = (raw) => {
+    if (Array.isArray(raw)) return raw;
+    if (Array.isArray(raw?.data)) return raw.data;
+    if (Array.isArray(raw?.offices)) return raw.offices;
+    if (Array.isArray(raw?.content)) return raw.content;
+    return [];
+};
+
+const officeIdOf = (office) =>
+    String(office?.officeId ?? office?.office_id ?? office?.id ?? '').trim();
+
+const officeLabelOf = (office) => {
+    const facilityId = String(office?.facilityId ?? office?.facility_id ?? '').trim();
+    const officeName = String(
+        office?.officeName
+        ?? office?.office_name
+        ?? office?.facilityName
+        ?? office?.name
+        ?? ''
+    ).trim();
+    return `${facilityId || '-'} - ${officeName || 'Unknown Office'}`;
 };
 
 /** Backend appends a synthetic TOTAL row (`isTotalRow`, `label: "TOTAL"`) — exclude from data + use for footer. */
@@ -254,7 +278,7 @@ const CRSReport = () => {
         const snap = claimsSnap;
         return Array.isArray(snap?.claimsData) ? snap.claimsData : null;
     });
-    /** Aggregates from last `/api/activity-report/claim-detail-report` TOTAL row (matches current filters). */
+    /** Aggregates from last `/api/claim-report` TOTAL row (matches current filters). */
     const [claimsApiTotals, setClaimsApiTotals] = useState(() => (
         isBrowserReload() ? null : (claimsSnap?.claimsApiTotals ?? null)
     ));
@@ -410,7 +434,7 @@ const CRSReport = () => {
 
     const resolveClaimsOfficeIds = useCallback((filters = {}) => {
         const allOfficeIds = (officesList || [])
-            .map((o) => String(o.officeId ?? o.office_id ?? o.id ?? ''))
+            .map(officeIdOf)
             .filter(Boolean);
         const selectedOfficeIds = (filters?.facilityIds || [])
             .map((id) => String(id).trim())
@@ -438,9 +462,8 @@ const CRSReport = () => {
         if (!forceRefresh && localOffices.length > 0) {
             const localNameMap = {};
             localOffices.forEach((o) => {
-                const officeKey = String(o.officeId ?? o.office_id ?? o.id ?? '');
-                const label = `${o.facilityId || '-'} - ${o.officeName || o.facilityName || o.office_name || 'Unknown Office'}`;
-                if (officeKey) localNameMap[officeKey] = label;
+                const officeKey = officeIdOf(o);
+                if (officeKey) localNameMap[officeKey] = officeLabelOf(o);
             });
             OFFICES_BASIC_CACHE.offices = localOffices;
             OFFICES_BASIC_CACHE.facilityNameMap = localNameMap;
@@ -448,15 +471,12 @@ const CRSReport = () => {
             return { offices: localOffices, nameMap: localNameMap };
         }
 
-        const officesBasicRes = await apiFetch('/api/offices/basic');
-        const offices = Array.isArray(officesBasicRes)
-            ? officesBasicRes
-            : (Array.isArray(officesBasicRes?.data) ? officesBasicRes.data : []);
+        const officesActiveRes = await apiFetch('/api/offices/active');
+        const offices = unwrapOfficesList(officesActiveRes);
         const nameMap = {};
         offices.forEach((o) => {
-            const officeKey = String(o.officeId ?? o.office_id ?? o.id ?? '');
-            const label = `${o.facilityId || '-'} - ${o.officeName || o.facilityName || o.office_name || 'Unknown Office'}`;
-            if (officeKey) nameMap[officeKey] = label;
+            const officeKey = officeIdOf(o);
+            if (officeKey) nameMap[officeKey] = officeLabelOf(o);
         });
         OFFICES_BASIC_CACHE.offices = offices;
         OFFICES_BASIC_CACHE.facilityNameMap = nameMap;
@@ -471,7 +491,7 @@ const CRSReport = () => {
 
         query.set('officeIds', officeIds.join(','));
         if (includePagination) {
-            query.set('page', String(Math.max(0, (targetPage || 1) - 1)));
+            query.set('page', String(Math.max(1, targetPage || 1)));
             query.set('size', String(itemsPerPage || 500));
         }
 
@@ -518,11 +538,11 @@ const CRSReport = () => {
         // For "All" permission: branch options from offices. For "Office": empty (filter hidden)
         const facilities = permission === 'All'
             ? (officesList || [])
-                .map((o) => String(o.officeId ?? o.office_id ?? o.id ?? ''))
+                .map(officeIdOf)
                 .filter(Boolean)
             : [...new Set(data.map(item => String(item.officeId ?? item.facility ?? '')).filter(Boolean).filter(f => f !== 'Unknown Branch'))].sort();
         const claimDetailFacilities = (officesList || [])
-            .map((o) => String(o.officeId ?? o.office_id ?? o.id ?? ''))
+            .map(officeIdOf)
             .filter(Boolean);
 
         // Months array
@@ -566,41 +586,37 @@ const CRSReport = () => {
 
             const selectedOfficeIds = (filters?.facilityIds || []).map(String).filter((id) => norm(id));
             const allOfficeIds = offices
-                .map((o) => String(o.officeId ?? o.office_id ?? o.id ?? ''))
+                .map(officeIdOf)
                 .filter(Boolean);
             const userOfficeIdStr = officeId != null ? String(officeId) : '';
             const officeIds = selectedOfficeIds.length > 0
                 ? selectedOfficeIds
-                : (allOfficeIds.length > 0 ? allOfficeIds : [userOfficeIdStr].filter(Boolean));
-            if (officeIds.length === 0) throw new Error('No office id found from /api/offices/basic');
+                : (permission === 'All'
+                    ? (allOfficeIds.length > 0 ? allOfficeIds : [userOfficeIdStr].filter(Boolean))
+                    : (userOfficeIdStr ? [userOfficeIdStr] : allOfficeIds));
+            if (officeIds.length === 0) throw new Error('No office id found from /api/offices/active');
 
-            const params = new URLSearchParams({
-                page: String(Math.max(0, (targetPage || 1) - 1)),
-                size: String(itemsPerPage || 500),
-            });
-            const searchOn = norm(filters?.searchOn);
-            const fromDate = norm(filters?.fromDate);
-            const toDate = norm(filters?.toDate);
-            const year = norm(filters?.year);
-            const monthRaw = filters?.month;
-            const clinicianId = norm(filters?.clinicianId);
-            const patientType = norm(filters?.patientType);
-            const encounterTypeDescription = norm(filters?.encounterTypeDescription);
-            const claimNo = norm(filters?.claimNo);
-            const patientId = norm(filters?.patientId);
-            const memberId = norm(filters?.memberId);
-            const claimStatus = norm(filters?.claimStatus);
-            const paymentStatus = norm(filters?.paymentStatus);
-            // claim-detail-report is always server-paginated/filtered — never re-filter the page client-side.
+            // Same base as `/api/activity-report`, plus any filters the user entered.
+            const params = new URLSearchParams();
+            params.set('officeId', officeIds.join(','));
+            params.set('page', String(Math.max(1, targetPage || 1)));
+            params.set('size', String(itemsPerPage || 500));
             const hasServerFilters = true;
 
-            // `/api/activity-report/claim-detail-report` — only non-empty filter values become query params.
-            if (searchOn) params.set('searchOn', searchOn);
+            const addParam = (key, value) => {
+                const normalized = norm(value);
+                if (!normalized) return;
+                params.set(key, normalized);
+            };
+            addParam('searchOn', filters?.searchOn);
+            const fromDate = norm(filters?.fromDate);
+            const toDate = norm(filters?.toDate);
             if (fromDate || toDate) {
                 if (fromDate) params.set('fromDate', fromDate);
                 if (toDate) params.set('toDate', toDate);
             } else {
-                if (year) params.set('year', year);
+                addParam('year', filters?.year);
+                const monthRaw = filters?.month;
                 if (norm(monthRaw)) {
                     const monthMap = {
                         January: '1', February: '2', March: '3', April: '4', May: '5', June: '6',
@@ -610,16 +626,16 @@ const CRSReport = () => {
                     if (monthValue) params.set('month', String(monthValue));
                 }
             }
-            if (clinicianId) params.set('clinicianId', clinicianId);
-            if (patientType) params.set('patientType', patientType);
-            if (encounterTypeDescription) params.set('encounterTypeDescription', encounterTypeDescription);
-            if (claimNo) params.set('claimNo', claimNo);
-            if (patientId) params.set('patientId', patientId);
-            if (memberId) params.set('memberId', memberId);
-            if (claimStatus) params.set('claimStatus', claimStatus);
-            if (paymentStatus) params.set('paymentStatus', paymentStatus);
+            addParam('clinicianId', filters?.clinicianId || filters?.clinician);
+            addParam('patientType', filters?.patientType);
+            addParam('encounterTypeDescription', filters?.encounterTypeDescription);
+            addParam('claimNo', filters?.claimNo);
+            addParam('patientId', filters?.patientId);
+            addParam('memberId', filters?.memberId);
+            addParam('claimStatus', filters?.claimStatus);
+            addParam('paymentStatus', filters?.paymentStatus);
 
-            const cacheKey = `claim-detail-report|${officeIds.join(',')}|${params.toString()}`;
+            const cacheKey = `claim-report|${params.toString()}`;
             const cached = readFromCache(claimsRequestCacheRef.current, cacheKey);
             if (cached) {
                 setIsServerFilteredClaims(cached.isServerFilteredClaims);
@@ -652,7 +668,7 @@ const CRSReport = () => {
             if (claimsInflightRequests.has(cacheKey)) {
                 claimsDataRes = await claimsInflightRequests.get(cacheKey);
             } else {
-                const req = apiFetch(`/api/activity-report/claim-detail-report?officeIds=${officeIds.join(',')}&${params.toString()}`);
+                const req = apiFetch(`/api/claim-report?${params.toString()}`);
                 claimsInflightRequests.set(cacheKey, req);
                 try {
                     claimsDataRes = await req;
@@ -671,7 +687,7 @@ const CRSReport = () => {
             const mappedData = await processInChunks(dataRows, mapClaimDetailReportItem);
             const newKpi = computeKpiFromMapped(mappedData);
             const nextPagination = {
-                page: Number(claimsDataRes?.page ?? Math.max(0, (targetPage || 1) - 1)),
+                page: Number(claimsDataRes?.page ?? Math.max(1, targetPage || 1)),
                 size: Number(claimsDataRes?.size ?? itemsPerPage),
                 totalPages: Number(claimsDataRes?.totalPages ?? 0),
                 totalElements: Number(claimsDataRes?.totalElements ?? dataRows.length ?? 0),
@@ -712,7 +728,7 @@ const CRSReport = () => {
             setIsLoading(false);
             setIsFiltering(false);
         }
-    }, [user, currentReportType, currentPage, appliedFilters, itemsPerPage, resolveOfficesBasic, refreshSyncStatus, writeClaimsListSnapshot]);
+    }, [user, permission, currentReportType, currentPage, appliedFilters, itemsPerPage, resolveOfficesBasic, refreshSyncStatus, writeClaimsListSnapshot]);
 
     const handleFilterChange = (key, value) => {
         setDraftFilters(prev => {
@@ -869,13 +885,13 @@ const CRSReport = () => {
 
                 const userOfficeIdStr = officeId != null ? String(officeId) : '';
                 const allOfficeIds = offices
-                    .map((o) => String(o.officeId ?? o.office_id ?? o.id ?? ''))
+                    .map(officeIdOf)
                     .filter(Boolean);
                 const officeIds = perm === 'All'
                     ? allOfficeIds
                     : (userOfficeIdStr ? [userOfficeIdStr] : []);
                 if (officeIds.length === 0) {
-                    throw new Error('No office id found from /api/offices/basic');
+                    throw new Error('No office id found from /api/offices/active');
                 }
 
                 const summaryCacheKey = `${currentReportType}|${perm}|${officeIds.join(',')}`;
@@ -1264,7 +1280,7 @@ const CRSReport = () => {
 
             // --- Field Filters ---
 
-            // Branch(es) - empty = all; claim_details uses officeId from /api/offices/basic
+            // Branch(es) - empty = all; claim_details uses officeId from /api/offices/active
             if (showBranchFilter && appliedFilters.facilityIds?.length > 0) {
                 const claimFacility = String(claim.officeId ?? claim.facilityId ?? claim.facility ?? '');
                 if (claimFacility && !appliedFilters.facilityIds.map(String).includes(String(claimFacility))) return false;

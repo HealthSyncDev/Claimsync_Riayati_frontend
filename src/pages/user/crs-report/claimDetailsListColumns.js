@@ -1,5 +1,5 @@
 /**
- * Column definitions for `/api/activity-report/claim-detail-report`.
+ * Column definitions for `/api/claim-report`.
  * Keep CLAIM_DETAILS_LIST_COLUMN_IDS in sync with the `id` fields below.
  */
 
@@ -142,7 +142,7 @@ export function getClaimDetailsListColumns(facilityNameMap = {}) {
         if (meta.align) col.align = meta.align;
         if (meta.className) col.className = meta.className;
 
-        // First column: office/facility group id → resolve name from /api/offices/basic
+        // First column: office/facility group id → resolve name from /api/offices/active
         if (id === 'facilityGroupId') {
             col.render = (val, row) => {
                 const officeKey = String(row?.officeId ?? val ?? '').trim();
