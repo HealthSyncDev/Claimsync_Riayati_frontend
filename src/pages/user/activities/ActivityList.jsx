@@ -652,8 +652,6 @@ const ActivityList = () => {
         });
 
         return [
-            textCol('id', 'ID', ['id'], '90px'),
-            textCol('officeId', 'Office ID', ['officeid', 'officeId', 'OfficeId', 'OfficeID'], '100px'),
             textCol('facilityId', 'Facility ID', ['facilityId', 'FacilityID', 'claim?.facilityId']),
             textCol('facilityName', 'Facility name', ['facilityName', 'Facility_Name', 'facility_name'], '150px'),
             textCol('invoiceNo', 'Invoice no.', ['invoiceNo', 'InvoiceNo'], '180px'),
@@ -999,7 +997,7 @@ const ActivityList = () => {
                                     <polyline points="7 10 12 15 17 10" />
                                     <line x1="12" y1="15" x2="12" y2="3" />
                                 </svg>
-                                <span>{exportingFormat === 'excel' ? 'Downloading...' : 'Excel'}</span>
+                                <span>{exportingFormat === 'excel' ? 'Downloading...' : 'Export Excel'}</span>
                             </button>
                             <button
                                 className="btn-export"
@@ -1012,7 +1010,7 @@ const ActivityList = () => {
                                     <polyline points="7 10 12 15 17 10" />
                                     <line x1="12" y1="15" x2="12" y2="3" />
                                 </svg>
-                                <span>{exportingFormat === 'csv' ? 'Downloading...' : 'CSV'}</span>
+                                <span>{exportingFormat === 'csv' ? 'Downloading...' : 'Export CSV'}</span>
                             </button>
                         </div>
 

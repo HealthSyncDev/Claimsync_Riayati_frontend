@@ -19,20 +19,23 @@ function portalNavGroup(portal) {
     return {
         label: portal.label,
         id: portal.id,
-        subItems: [
-            { label: 'My Dashboard', path: p('/dashboard') },
-            {
-                label: 'Reports',
-                id: `${portal.id}-reports`,
-                subItems: [
-                    { label: 'Claim Details', path: p('/crs/claims') },
-                    { label: 'Claim Details With Activity', path: p('/crs/activities') },
-                    { label: 'Claim summary - Month wise', path: p('/crs/claim-summary-month') },
-                    { label: 'Claim summary - Payer ID', path: p('/crs/claim-summary-payer') },
-                ],
-            },
-            { label: 'Resubmission', path: p('/crs/resubmission') },
-        ],
+        disabled: !!portal.disabled,
+        subItems: portal.disabled
+            ? undefined
+            : [
+                { label: 'My Dashboard', path: p('/dashboard') },
+                {
+                    label: 'Reports',
+                    id: `${portal.id}-reports`,
+                    subItems: [
+                        { label: 'Claim Details', path: p('/crs/claims') },
+                        { label: 'Claim Details With Activity', path: p('/crs/activities') },
+                        { label: 'Claim summary - Month wise', path: p('/crs/claim-summary-month'), disabled: true },
+                        { label: 'Claim summary - Payer ID', path: p('/crs/claim-summary-payer'), disabled: true },
+                    ],
+                },
+                { label: 'Resubmission', path: p('/crs/resubmission') },
+            ],
     };
 }
 

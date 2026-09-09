@@ -177,7 +177,7 @@ const Sidebar = ({ title, links = [], settingsPath }) => {
         const itemKey = link.id || link.path || `${depth}-${link.label}`;
         const menuKey = link.id || link.label;
 
-        if (link.subItems?.length) {
+        if (link.subItems?.length && !link.disabled) {
             const open = !!openMenus[menuKey];
             const groupActive = hasActiveDescendant(link, location.pathname);
             return (

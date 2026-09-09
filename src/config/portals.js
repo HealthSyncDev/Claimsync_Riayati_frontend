@@ -1,7 +1,7 @@
 export const CLAIM_PORTALS = [
-    { id: 'dhpo', label: 'DHPO', prefix: '' },
+    { id: 'dhpo', label: 'DHPO', prefix: '', disabled: true },
     { id: 'riayati', label: 'Riayati', prefix: '/riayati' },
-    { id: 'shafafi', label: 'Shafafi', prefix: '/shafafi' },
+    { id: 'shafafi', label: 'Shafafi', prefix: '/shafafi', disabled: true },
 ];
 
 export function getPortalFromPathname(pathname = '') {

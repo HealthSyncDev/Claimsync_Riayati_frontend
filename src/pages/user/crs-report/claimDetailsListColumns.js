@@ -71,7 +71,6 @@ export const CLAIM_DETAILS_LIST_COLUMN_IDS = [
     'paymentStatus',
     'patientType',
     'encounterTypeDescription',
-    'officeId',
 ];
 
 const COLUMN_META = {
@@ -127,7 +126,6 @@ const COLUMN_META = {
     paymentStatus: { label: 'Payment Status' },
     patientType: { label: 'Patient Type' },
     encounterTypeDescription: { label: 'Encounter Type Description', minWidth: '180px' },
-    officeId: { label: 'Office ID' },
 };
 
 export function getClaimDetailsListColumns(facilityNameMap = {}) {

@@ -489,6 +489,7 @@ const CRSReport = () => {
         const query = new URLSearchParams();
         if (officeIds.length === 0) return { officeIds: [], query };
 
+        query.set('officeId', officeIds.join(','));
         query.set('officeIds', officeIds.join(','));
         if (includePagination) {
             query.set('page', String(Math.max(1, targetPage || 1)));
@@ -1483,7 +1484,7 @@ const CRSReport = () => {
                 alert('No office selected for export');
                 return;
             }
-            await apiDownload(`/api/activity-report/claims/export/csv?${query.toString()}`, {
+            await apiDownload(`/api/claim-report/export/csv?${query.toString()}`, {
                 fallbackFileName: `claims_${new Date().toISOString().split('T')[0]}.csv`,
             });
         } catch (err) {
@@ -1503,7 +1504,7 @@ const CRSReport = () => {
                 alert('No office selected for export');
                 return;
             }
-            await apiDownload(`/api/activity-report/claims/export/excel?${query.toString()}`, {
+            await apiDownload(`/api/claim-report/export/excel?${query.toString()}`, {
                 fallbackFileName: `claims_${new Date().toISOString().split('T')[0]}.xlsx`,
             });
         } catch (err) {
@@ -1581,7 +1582,7 @@ const CRSReport = () => {
                                             <polyline points="7 10 12 15 17 10" />
                                             <line x1="12" y1="15" x2="12" y2="3" />
                                         </svg>
-                                        <span>{exportingFormat === 'excel' ? 'Downloading...' : 'Excel'}</span>
+                                        <span>{exportingFormat === 'excel' ? 'Downloading...' : 'Export Excel'}</span>
                                     </button>
                                     <button
                                         className="btn-export"
@@ -1594,7 +1595,7 @@ const CRSReport = () => {
                                             <polyline points="7 10 12 15 17 10" />
                                             <line x1="12" y1="15" x2="12" y2="3" />
                                         </svg>
-                                        <span>{exportingFormat === 'csv' ? 'Downloading...' : 'CSV'}</span>
+                                        <span>{exportingFormat === 'csv' ? 'Downloading...' : 'Export CSV'}</span>
                                     </button>
                                 </div>
 
