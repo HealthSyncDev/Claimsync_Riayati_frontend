@@ -1,0 +1,25 @@
+/* ActivateLicense page — inherits most styles from Login.css via shared class names.
+   Only page-specific overrides live here. */
+
+.activate-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding: 8px 14px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+    cursor: pointer;
+    color: var(--text-muted, #94a3b8);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.activate-back-btn:hover {
+    color: var(--brand-600, #4f46e5);
+    background: var(--surface-hover, #f1f5f9);
+}

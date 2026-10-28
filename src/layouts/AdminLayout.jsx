@@ -17,9 +17,8 @@ const AdminLayout = () => {
 
     if (loading) return <div>Loading...</div>;
 
-    const adminLinks = [
+    const commonLinks = [
         { label: 'Dashboard', path: '/admin/dashboard' },
-        { label: 'Manage Users', path: '/admin/users' },
         { label: 'Offices / Branch', path: '/admin/office' },
         { label: 'Categories', path: '/admin/categories' },
         { label: 'Designations', path: '/admin/designation' },
@@ -31,6 +30,22 @@ const AdminLayout = () => {
         { label: 'CPT Code Mapping', path: '/admin/cpt-code-mapping' },
         { label: 'Payer Management', path: '/admin/payer-ids' },
         { label: 'Senders', path: '/admin/senders' },
+    ];
+
+    const adminLinks = [
+        { label: 'Manage Users', path: '/admin/users' },
+        {
+            label: 'DHPO',
+            subItems: commonLinks
+        },
+        {
+            label: 'Riayati',
+            subItems: commonLinks
+        },
+        {
+            label: 'Shafafi',
+            subItems: commonLinks
+        }
     ];
 
     const location = useLocation();

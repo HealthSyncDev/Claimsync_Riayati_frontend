@@ -606,3 +606,99 @@
 .auth-role-option:hover .auth-role-option-arrow {
     color: var(--brand-600);
 }
+
+/* =========================
+   License error banner
+   ========================= */
+.auth-license-error {
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.auth-license-error-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.auth-license-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border: 2px solid var(--status-error-fg, #dc2626);
+    border-radius: var(--radius-md, 8px);
+    background: transparent;
+    color: var(--status-error-fg, #dc2626);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, color 0.18s ease;
+    margin-left: auto;
+}
+
+.auth-license-btn:hover {
+    background: var(--status-error-fg, #dc2626);
+    color: #fff;
+}
+
+
+
+/* =========================
+   Success message
+   ========================= */
+.auth-success {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md, 8px);
+    background: #f0fdf4;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.auth-success-ic {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #16a34a;
+    background: #fff;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    flex-shrink: 0;
+}
+
+.auth-success-msg {
+    margin: 0;
+    color: #166534;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+/* =========================
+   Secure sign-in badge
+   ========================= */
+.auth-secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted, #94a3b8);
+    font-weight: 500;
+}
+
+.auth-secure-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+

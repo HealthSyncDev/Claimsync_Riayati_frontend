@@ -61,44 +61,15 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Check localStorage for persisted user
-        const initAuth = async () => {
+        const initAuth = () => {
             const storedUser = localStorage.getItem("user");
             if (storedUser) {
-                let parsedUser = JSON.parse(storedUser);
-
-                // Self-healing: If user is logged in (and not admin) but missing officeId or permission, try to fetch
-                const needsRefresh = !parsedUser.isDevBypass && parsedUser.role !== 'admin' && (parsedUser.userId || parsedUser.id) &&
-                    (!parsedUser.officeId || !parsedUser.permission);
-                if (needsRefresh) {
-                    try {
-                        const uid = parsedUser.userId || parsedUser.id;
-                        const token = localStorage.getItem('token');
-                        console.log(`AuthContext: Refreshing profile for user ${uid} to get officeId...`);
-                        const res = await fetch(`/api/users/${uid}`, {
-                            headers: {
-                                Authorization: token ? `Bearer ${token}` : '',
-                                'ngrok-skip-browser-warning': 'true',
-                            },
-                        });
-                        if (res.ok) {
-                            const details = await res.json();
-                            // Merge and save
-                            parsedUser = { ...parsedUser, ...details };
-                            // Normalize role if needed
-                            parsedUser.role = parsedUser.roleName?.toLowerCase() || parsedUser.role;
-
-                            console.log("AuthContext: Profile refreshed, officeId:", parsedUser.officeId, "permission:", parsedUser.permission);
-                            localStorage.setItem("user", JSON.stringify(parsedUser));
-                        } else {
-                            const body = await res.text().catch(() => '');
-                            console.error(`AuthContext: GET /api/users/${uid} failed ${res.status}. Body:`, body);
-                        }
-                    } catch (err) {
-                        console.error("AuthContext: Failed to refresh user profile:", err);
-                    }
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    setUser(parsedUser);
+                } catch {
+                    localStorage.removeItem("user");
                 }
-
-                setUser(parsedUser);
             }
             setLoading(false);
         };
@@ -111,15 +82,6 @@ export const AuthProvider = ({ children }) => {
         const url = `/api/auth/login`;
         console.log("Login URL:", url);
 
-        const getResponseMessage = async (res, fallbackMessage) => {
-            try {
-                const data = await res.json();
-                return data?.message || fallbackMessage;
-            } catch {
-                return fallbackMessage;
-            }
-        };
-
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -129,54 +91,35 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify(credentials),
             });
 
-            if (!response.ok) {
-                const message = await getResponseMessage(response, 'Network error. Please try again.');
-                throw new Error(message);
-            }
-
             let data;
             try {
                 data = await response.json();
             } catch {
                 throw new Error('Network error. Please try again.');
             }
-            const rawUser = data.user || data; // backend might return { user: ... } or just user data
 
-            // Store token immediately so subsequent API calls can use it
-            if (data.token) {
-                localStorage.setItem("token", data.token);
+            // Backend returns: { success: boolean, message: string, role?: string, userId?: number, licenseStatus?: string }
+            if (!data.success) {
+                return {
+                    success: false,
+                    message: data.message || 'Login failed. Please try again.',
+                    licenseStatus: data.licenseStatus || null,
+                    role: data.role || null,
+                };
             }
 
-            // Normalize user data to match app expectations (expecting 'role', API sends 'roleName')
-            let userData = {
-                ...rawUser,
-                role: rawUser.roleName?.toLowerCase() || rawUser.role
+            // Build user data from the backend AuthResponse
+            const userData = {
+                userId: data.userId,
+                id: data.userId,
+                username: credentials.username,
+                role: data.role?.toLowerCase() || 'user',
+                name: credentials.username,
             };
 
-            const token = data.token || localStorage.getItem('token');
-            const authHeaders = {
-                'Authorization': `Bearer ${token}`,
-                'ngrok-skip-browser-warning': 'true'
-            };
-
-            // For non-admin users, fetch detailed profile and transactions
-            if (userData.role !== 'admin') {
-                try {
-                    const userId = userData.userId || userData.id;
-                    if (userId) {
-                        const userDetailsResponse = await fetch(`/api/users/${userId}`, { headers: authHeaders });
-                        if (userDetailsResponse.ok) {
-                            const userDetails = await userDetailsResponse.json();
-                            // Merge detailed info
-                            userData = { ...userData, ...userDetails };
-
-                            // Ensure role is consistent if needed
-                            userData.role = userData.roleName?.toLowerCase() || userData.role;
-                        }
-                    }
-                } catch (extraError) {
-                    console.error("Error fetching additional user data:", extraError);
-                }
+            // Store token if the backend ever starts returning one
+            if (data.token) {
+                localStorage.setItem("token", data.token);
             }
 
             setUser(userData);
@@ -185,8 +128,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Login error:", error);
             const message =
-                error instanceof TypeError ||
-                String(error?.message || '').includes("Failed to execute 'json' on 'Response'")
+                error instanceof TypeError
                     ? 'Network error. Please try again.'
                     : (error.message || 'Network error. Please try again.');
             return { success: false, message };

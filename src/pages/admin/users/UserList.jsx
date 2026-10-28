@@ -87,7 +87,7 @@ const UserList = () => {
             });
 
             if (response.ok) {
-                setUsers(users.filter(user => user.userId !== id));
+                setUsers(users.filter(user => user.id !== id));
                 toast.success('User deleted');
             } else {
                 toast.error('Failed to delete user');
@@ -99,12 +99,12 @@ const UserList = () => {
     };
 
     const filteredUsers = users.filter(user =>
-        (user.userLabel?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (user.username?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (user.roleName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        (user.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (user.role?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
 
-    const activeUsers = users.filter(u => u.activeUser).length;
+    const activeUsers = users.filter(u => u.isActive === 1).length;
 
     return (
         <div className="page-shell">
@@ -185,12 +185,12 @@ const UserList = () => {
                                     {filteredUsers.length > 0 ? (
                                         filteredUsers.map((user, index) => (
                                             <UserRow
-                                                key={user.userId}
+                                                key={user.id}
                                                 index={index}
                                                 user={user}
-                                                onView={() => navigate(`/admin/users/view/${user.userId}`, { state: { user } })}
-                                                onEdit={() => navigate(`/admin/users/edit/${user.userId}`, { state: { user } })}
-                                                onDelete={() => handleDelete(user.userId)}
+                                                onView={() => navigate(`/admin/users/view/${user.id}`, { state: { user } })}
+                                                onEdit={() => navigate(`/admin/users/edit/${user.id}`, { state: { user } })}
+                                                onDelete={() => handleDelete(user.id)}
                                             />
                                         ))
                                     ) : (
@@ -389,27 +389,27 @@ const UserList = () => {
 };
 
 const UserRow = ({ user, index, onView, onEdit, onDelete }) => {
-    const isActive = user.activeUser;
+    const isActive = user.isActive === 1;
     return (
         <tr>
             <td className="text-muted font-medium">{index + 1}</td>
             <td>
                 <div className="flex items-center gap-md">
                     <div className="user-avatar-cell">
-                        {user.userLabel ? user.userLabel.charAt(0) : 'U'}
+                        {user.name ? user.name.charAt(0) : 'U'}
                     </div>
                     <div className="flex-col">
-                        <span className="text-main font-bold" style={{ fontSize: '0.95rem' }}>{user.userLabel}</span>
-                        <span className="text-xs text-muted">@{user.username}</span>
+                        <span className="text-main font-bold" style={{ fontSize: '0.95rem' }}>{user.name}</span>
+                        <span className="text-xs text-muted">@{user.username || 'N/A'}</span>
                     </div>
                 </div>
             </td>
             <td>
                 <div className="flex-col gap-xs">
-                    <span className="text-sm font-medium text-body">{user.roleName || 'N/A'}</span>
-                    {user.officeName && (
+                    <span className="text-sm font-medium text-body">{user.role || 'N/A'}</span>
+                    {user.permission && user.permission.length > 0 && (
                         <span className="text-xs text-muted flex items-center gap-xs">
-                            🏢 {user.officeName}
+                            🛡️ {user.permission.join(', ')}
                         </span>
                     )}
                 </div>
@@ -417,7 +417,7 @@ const UserRow = ({ user, index, onView, onEdit, onDelete }) => {
             <td>
                 <div className="flex-col gap-xs">
                     {user.email && <a href={`mailto:${user.email}`} className="text-xs text-body hover:underline">{user.email}</a>}
-                    {user.mobile && <span className="text-xs text-muted">📞 {user.mobile}</span>}
+                    {user.phone && <span className="text-xs text-muted">📞 {user.phone}</span>}
                 </div>
             </td>
             <td>
@@ -442,9 +442,9 @@ const UserRow = ({ user, index, onView, onEdit, onDelete }) => {
                         }}></span>
                         {isActive ? 'Active' : 'Inactive'}
                     </span>
-                    {!isActive && user.deactiveDate && (
-                        <span className="text-xs text-muted" title={user.deactiveDate}>
-                            Since: {new Date(user.deactiveDate).toLocaleDateString()}
+                    {user.activeDate && (
+                        <span className="text-xs text-muted" title={user.activeDate}>
+                            Since: {new Date(user.activeDate).toLocaleDateString()}
                         </span>
                     )}
                 </div>

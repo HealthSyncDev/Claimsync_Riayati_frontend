@@ -8,6 +8,7 @@ import { CLAIM_PORTALS, portalHref } from './config/portals';
 import { PortalProvider } from './context/PortalContext';
 
 import Login from './pages/auth/Login';
+import ActivateLicense from './pages/auth/ActivateLicense';
 import AdminDashboard from './pages/admin/dashboard/AdminDashboard';
 import UserList from './pages/admin/users/UserList';
 import AddUser from './pages/admin/users/AddUser';
@@ -108,6 +109,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Login role="admin" />} />
+          <Route path="/activate-license" element={<ActivateLicense />} />
         </Route>
 
         {/* Admin Routes */}

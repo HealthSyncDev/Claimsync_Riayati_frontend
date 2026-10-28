@@ -70,12 +70,12 @@ const UserLayout = () => {
     const appPath = stripPortalPrefix(location.pathname);
 
     useEffect(() => {
-        if (!loading && (!user || user.role !== 'user')) {
-            // If user is admin trying to access user dashboard, maybe redirect to admin? 
-            // Or just login. For now, strict check.
-            if (user?.role === 'admin') {
+        if (!loading && !user) {
+            navigate('/login');
+        } else if (!loading && user) {
+            if (user.role === 'admin') {
                 navigate('/admin/dashboard');
-            } else {
+            } else if (user.role !== 'user' && user.role !== 'office') {
                 navigate('/login');
             }
         }
